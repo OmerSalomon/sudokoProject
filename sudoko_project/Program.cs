@@ -1,13 +1,23 @@
 ﻿/* A Backtracking program in 
 C# to solve Sudoku problem */
 using System;
+using System.Dynamic;
+using System.Security.AccessControl;
+using System.IO;
+using sudoko_project;
+using System.Collections;
+using System.Xml.XPath;
+using System.Runtime.InteropServices.WindowsRuntime;
+using System.Runtime.InteropServices;
+
+
+
 
 class GFG
 {
 
-    public static bool isSafe(int[,] board,
-                            int row, int col,
-                            int num)
+
+    public static bool isSafe(int[,] board, int row, int col, int num)
     {
 
         // Row has the unique (row-clash)
@@ -67,24 +77,19 @@ class GFG
         int row = -1;
         int col = -1;
         bool isEmpty = true;
-        for (int i = 0; i < n; i++)
+
+        for (int i = 0; i < n && isEmpty; i++)
         {
-            for (int j = 0; j < n; j++)
+            for (int j = 0; j < n && isEmpty; j++)
             {
                 if (board[i, j] == 0)
                 {
                     row = i;
                     col = j;
 
-                    // We still have some remaining
-                    // missing values in Sudoku
+                    // We found an empty spot, so mark isEmpty as false to exit loops
                     isEmpty = false;
-                    break;
                 }
-            }
-            if (!isEmpty)
-            {
-                break;
             }
         }
 
@@ -125,7 +130,9 @@ class GFG
         {
             for (int d = 0; d < N; d++)
             {
-                Console.Write(board[r, d]);
+                int num = board[r, d];
+                char ch = (char)((int)'0' + num);
+                Console.Write(ch);
                 Console.Write(" ");
             }
             Console.Write("\n");
@@ -137,33 +144,40 @@ class GFG
         }
     }
 
+    public static char[,] getGrid()
+    {
+        int[,] grid = { { 3, 0, 6, 5, 0, 8, 4, 0, 0 },
+                { 5, 2, 0, 0, 0, 0, 0, 0, 0 },
+                { 0, 8, 7, 0, 0, 0, 0, 3, 1 },
+                { 0, 0, 3, 0, 1, 0, 0, 8, 0 },
+                { 9, 0, 0, 8, 6, 3, 0, 0, 5 },
+                { 0, 5, 0, 0, 9, 0, 6, 0, 0 },
+                { 1, 3, 0, 0, 0, 0, 2, 5, 0 },
+                { 0, 0, 0, 0, 0, 0, 0, 7, 4 },
+                { 0, 0, 5, 2, 0, 6, 3, 0, 0 } };
+
+        // Create a new char array of the same dimensions
+        char[,] charGrid = new char[grid.GetLength(0), grid.GetLength(1)];
+
+        for (int i = 0; i < grid.GetLength(0); i++)
+        {
+            for (int j = 0; j < grid.GetLength(1); j++)
+            {
+                // Check if the value is 0, replace with a specific char, e.g., 'X'
+                // Otherwise, convert the number to its char representation
+                charGrid[i, j] = grid[i, j] == 0 ? '0' : (char)('0' + grid[i, j]);
+            }
+        }
+
+        return charGrid;
+    }
+
     // Driver Code
     public static void Main(String[] args)
     {
-
-        int[,] board = new int[,] {
-            { 3, 0, 6, 5, 0, 8, 4, 0, 0 },
-            { 5, 2, 0, 0, 0, 0, 0, 0, 0 },
-            { 0, 8, 7, 0, 0, 0, 0, 3, 1 },
-            { 0, 0, 3, 0, 1, 0, 0, 8, 0 },
-            { 9, 0, 0, 8, 6, 3, 0, 0, 5 },
-            { 0, 5, 0, 0, 9, 0, 6, 0, 0 },
-            { 1, 3, 0, 0, 0, 0, 2, 5, 0 },
-            { 0, 0, 0, 0, 0, 0, 0, 7, 4 },
-            { 0, 0, 5, 2, 0, 6, 3, 0, 0 }
-        };
-        int N = board.GetLength(0);
-
-        if (solveSudoku(board, N))
-        {
-
-            // print solution
-            print(board, N);
-        }
-        else
-        {
-            Console.Write("No solution");
-        }
+        Board board = new Board(getGrid());
+        Console.WriteLine(board.ToString());
+        Console.WriteLine(board.getBoardData());
     }
 }
 
