@@ -11,36 +11,31 @@ namespace sudoko_project
     {
         private int number;
 
-        ArrayList possibleNumbers;
+        Dictionary<int, bool> possibleNumbers;
 
         public Cell(int num, int size)
         {
-            possibleNumbers = new ArrayList();
+            possibleNumbers = new Dictionary<int, bool>(0);
 
             if (num == 0)
             {
                 for (int i = 1; i <= size; i++)
                 {
-                    possibleNumbers.Add(i);
+                    possibleNumbers[i] = true;
                 }
             }
 
             this.number = num;
         }
 
-        public ArrayList getPossilbeNumbers()
+        public Dictionary<int, bool> getNumberDict()
         {
             return possibleNumbers;
         }
 
         public void setNumberImpossible(int number)
         {
-            possibleNumbers.Remove(number);
-            if (possibleNumbers.Count == 1)
-            {
-                this.number = (int)possibleNumbers[0];
-                this.possibleNumbers.Clear();
-            }
+            possibleNumbers[number] = false;
         }
 
         internal int getNumber()
@@ -77,10 +72,12 @@ namespace sudoko_project
                 for (int x = 0; x < dimantionLen; x++)
                 {
                     string possibleNumbersString = "";
+                    Cell cell = cellsBoard[y, x];
 
-                    foreach (int number in cellsBoard[y, x].getPossilbeNumbers())
+                    foreach (int number in cell.getNumberDict().Keys)
                     {
-                        possibleNumbersString += number.ToString() + ", ";
+                        if (cell.getNumberDict()[number] == true)
+                            possibleNumbersString += number.ToString() + ", ";
                     }
 
                     int cellNumber = cellsBoard[y, x].getNumber();
@@ -110,6 +107,46 @@ namespace sudoko_project
             }
 
             return res;
+        }
+
+        private bool isSafe(int y, int x, int num)
+        {
+            int dimantionLen = cellsBoard.GetLength(0);
+
+            for (int d = 0; d < dimantionLen; d++)
+            {
+                if (cellsBoard[y, d].getNumber() == num)
+                {
+                    return false;
+                }
+            }
+
+            for (int r = 0; r < dimantionLen; r++)
+            {
+                if (cellsBoard[r, x].getNumber() == num)
+                {
+                    return false;
+                }
+            }
+
+            int sqrt = (int)Math.Sqrt(dimantionLen);
+            int boxRowStart = y - y % sqrt;
+            int boxColStart = x - x % sqrt;
+
+            for (int r = boxRowStart;
+                r < boxRowStart + sqrt; r++)
+            {
+                for (int d = boxColStart;
+                    d < boxColStart + sqrt; d++)
+                {
+                    if (cellsBoard[r, d].getNumber() == num)
+                    {
+                        return false;
+                    }
+                }
+            }
+
+            return true;
         }
 
         private void RemoveImpossibleNumbers()
