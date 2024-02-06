@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Common;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 
 namespace sudoko_project
@@ -32,9 +33,10 @@ namespace sudoko_project
         internal void EditMarker(byte number, bool operation)
         {
             if (operation)
-                markers.Remove(number);
-            else 
                 markers.Add(number);
+            else
+                markers.Remove(number);
+
         }
 
 
@@ -46,6 +48,11 @@ namespace sudoko_project
         internal void SetNumber(byte num)
         {
             this.value = num;
+        }
+
+        internal int getMarkersCount()
+        {
+            return markers.Count;
         }
     }
 
@@ -86,6 +93,29 @@ namespace sudoko_project
             }
         }
 
+        internal (byte, byte) FindLessMarkedCell()
+        {
+            int minMarkersCount = cellsBoard[0, 0].getMarkersCount();
+            byte resRow = 0;
+            byte resColumn = 0;
+
+            for (byte row = 0; row < dimensionLen; row++)
+            {
+                for (byte colunm = 0; colunm < dimensionLen; colunm++)
+                {
+                    Cell cell = cellsBoard[row, colunm];
+                    if (cell.getMarkersCount() < minMarkersCount)
+                    {
+                        resRow = row;
+                        resColumn = colunm;
+                        minMarkersCount = cell.getMarkersCount();
+                    }
+                }
+            }
+
+            return (resRow, resColumn);
+        }
+
         internal string GetBoardData()
         {
             StringBuilder boardData = new StringBuilder();
@@ -101,7 +131,30 @@ namespace sudoko_project
             return boardData.ToString();
         }
 
-        public void editMarkers(byte row, byte column, bool operation)
+        public void ReverseReduceCell(byte row, byte column)
+        {
+            editMarkersForCell(row, column, true);
+        }
+
+        public void ReduceBoardMarkers()
+        {
+            for (byte row = 0; row < dimensionLen; row++)
+            {
+                for (byte column = 0; column < dimensionLen; column++)
+                {
+                    editMarkersForCell(row, column, false);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Editing the markers of the row, column and the box
+        /// that are given 
+        /// 
+        /// operation = false: remove markers
+        /// operation = true: add markers
+        /// </summary>
+        private void editMarkersForCell(byte row, byte column, bool operation)
         {
             byte cellNum = cellsBoard[row, column].GetValue();
             if (cellNum != 0)
@@ -163,6 +216,21 @@ namespace sudoko_project
         public override string ToString()
         {
             return GetBoardData();
+        }
+
+        internal void reduceCell(byte row, byte column)
+        {
+            editMarkersForCell(row, column, false);
+        }
+
+        internal int getDimensionLen()
+        {
+            return dimensionLen;
+        }
+
+        internal void setCellNumber(byte row, byte column, byte cellValue)
+        {
+            cellsBoard[row, column].SetNumber(cellValue);
         }
     }
 }

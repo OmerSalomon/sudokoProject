@@ -73,18 +73,9 @@ class Program
     // Driver Code
     public static void Main(String[] args)
     {
-        Algorithem algorithem = new Algorithem();
+        Solver solver = new Solver();
 
-        Stopwatch stopwatch = new Stopwatch();
-        char[,] grid = getGridB();
-
-        stopwatch.Start();
-        char[,] solvedGrid = algorithem.SolveSudoko(grid);
-        stopwatch.Stop();
-
-
-        Console.WriteLine(Grider.ConvertGridToString(solvedGrid));
-        Console.WriteLine($"Elapsed Time is {stopwatch.ElapsedMilliseconds} ms");
+        solver.Solve(getGridA());
 
 
     }
