@@ -9,152 +9,50 @@ using System.Collections;
 using System.Xml.XPath;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Runtime.InteropServices;
+using System.Diagnostics;
 
 
-
-
-class GFG
+class Program
 {
-
-
-    public static bool isSafe(int[,] board, int row, int col, int num)
+    public static char[,] getGridB()
     {
+        string input = "0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000";
 
-        // Row has the unique (row-clash)
-        for (int d = 0; d < board.GetLength(0); d++)
+        int inputlength = input.Length;
+
+        int dimension = (int)Math.Sqrt(inputlength);
+
+        if (dimension * dimension != inputlength)
         {
+            throw new Exception("The length of the string is not a perfect square.");
+        }
 
-            // Check if the number
-            // we are trying to
-            // place is already present in
-            // that row, return false;
-            if (board[row, d] == num)
+        char[,] grid = new char[dimension, dimension];
+
+        int stringIndex = 0;
+        for (int i = 0; i < dimension; i++)
+        {
+            for (int j = 0; j < dimension; j++)
             {
-                return false;
+                grid[i, j] = input[stringIndex++];
             }
         }
 
-        // Column has the unique numbers (column-clash)
-        for (int r = 0; r < board.GetLength(0); r++)
-        {
-
-            // Check if the number 
-            // we are trying to
-            // place is already present in
-            // that column, return false;
-            if (board[r, col] == num)
-            {
-                return false;
-            }
-        }
-
-        // corresponding square has
-        // unique number (box-clash)
-        int sqrt = (int)Math.Sqrt(board.GetLength(0));
-        int boxRowStart = row - row % sqrt;
-        int boxColStart = col - col % sqrt;
-
-        for (int r = boxRowStart;
-            r < boxRowStart + sqrt; r++)
-        {
-            for (int d = boxColStart;
-                d < boxColStart + sqrt; d++)
-            {
-                if (board[r, d] == num)
-                {
-                    return false;
-                }
-            }
-        }
-
-        // if there is no clash, it's safe
-        return true;
+        return grid;
     }
-
-    public static bool solveSudoku(int[,] board,
-                                        int n)
+    public static char[,] getGridA()
     {
-        int row = -1;
-        int col = -1;
-        bool isEmpty = true;
-
-        for (int i = 0; i < n && isEmpty; i++)
-        {
-            for (int j = 0; j < n && isEmpty; j++)
-            {
-                if (board[i, j] == 0)
-                {
-                    row = i;
-                    col = j;
-
-                    // We found an empty spot, so mark isEmpty as false to exit loops
-                    isEmpty = false;
-                }
-            }
-        }
-
-        // no empty space left
-        if (isEmpty)
-        {
-            return true;
-        }
-
-        // else for each-row backtrack
-        for (int num = 1; num <= n; num++)
-        {
-            if (isSafe(board, row, col, num))
-            {
-                board[row, col] = num;
-                if (solveSudoku(board, n))
-                {
-
-                    // Print(board, n);
-                    return true;
-                }
-                else
-                {
-
-                    // Replace it
-                    board[row, col] = 0;
-                }
-            }
-        }
-        return false;
-    }
-
-    public static void print(int[,] board, int N)
-    {
-
-        // We got the answer, just print it
-        for (int r = 0; r < N; r++)
-        {
-            for (int d = 0; d < N; d++)
-            {
-                int num = board[r, d];
-                char ch = (char)((int)'0' + num);
-                Console.Write(ch);
-                Console.Write(" ");
-            }
-            Console.Write("\n");
-
-            if ((r + 1) % (int)Math.Sqrt(N) == 0)
-            {
-                Console.Write("");
-            }
-        }
-    }
-
-    public static char[,] getGrid()
-    {
-        int[,] grid = { { 3, 0, 6, 5, 0, 8, 4, 0, 0 },
-                { 5, 2, 0, 0, 0, 0, 0, 0, 0 },
-                { 0, 8, 7, 0, 0, 0, 0, 3, 1 },
-                { 0, 0, 3, 0, 1, 0, 0, 8, 0 },
-                { 9, 0, 0, 8, 6, 3, 0, 0, 5 },
-                { 0, 5, 0, 0, 9, 0, 6, 0, 0 },
-                { 1, 3, 0, 0, 0, 0, 2, 5, 0 },
-                { 0, 0, 0, 0, 0, 0, 0, 7, 4 },
-                { 0, 0, 5, 2, 0, 6, 3, 0, 0 } };
+        int[,] grid = new int[,] {
+            { 3, 0, 6, 5, 0, 8, 4, 0, 0 },
+            { 5, 2, 0, 0, 0, 0, 0, 0, 0 },
+            { 0, 8, 7, 0, 0, 0, 0, 3, 1 },
+            { 0, 0, 3, 0, 1, 0, 0, 8, 0 },
+            { 9, 0, 0, 8, 6, 3, 0, 0, 5 },
+            { 0, 5, 0, 0, 9, 0, 6, 0, 0 },
+            { 1, 3, 0, 0, 0, 0, 2, 5, 0 },
+            { 0, 0, 0, 0, 0, 0, 0, 7, 4 },
+            { 0, 0, 5, 2, 0, 6, 3, 0, 0 }
+        };
 
         // Create a new char array of the same dimensions
         char[,] charGrid = new char[grid.GetLength(0), grid.GetLength(1)];
@@ -175,9 +73,20 @@ class GFG
     // Driver Code
     public static void Main(String[] args)
     {
-        Board board = new Board(getGrid());
-        Console.WriteLine(board.ToString());
-        Console.WriteLine(board.getBoardData());
+        Algorithem algorithem = new Algorithem();
+
+        Stopwatch stopwatch = new Stopwatch();
+        char[,] grid = getGridB();
+
+        stopwatch.Start();
+        char[,] solvedGrid = algorithem.SolveSudoko(grid);
+        stopwatch.Stop();
+
+
+        Console.WriteLine(Grider.ConvertGridToString(solvedGrid));
+        Console.WriteLine($"Elapsed Time is {stopwatch.ElapsedMilliseconds} ms");
+
+
     }
 }
 

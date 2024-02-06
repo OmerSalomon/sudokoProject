@@ -48,7 +48,7 @@
     <Compile Include="code\Model.cs" />
     <Compile Include="code\Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="code\StringEdit.cs" />
+    <Compile Include="code\Grider.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

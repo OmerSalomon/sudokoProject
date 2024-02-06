@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace sudoko_project
 {
-    internal class StringEdit
+    internal class Grider
     {
         public static string ConvertGridToString(char[,] grid)
         {

@@ -1,189 +1,158 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
+using System.Data.Common;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace sudoko_project
 {
     internal class Cell
     {
-        private int number;
-
-        Dictionary<int, bool> possibleNumbers;
-
-        internal Cell(int num, int size)
+        private byte value;
+        private HashSet<byte> markers;
+        internal Cell(byte num, byte markerAmount)
         {
-            possibleNumbers = new Dictionary<int, bool>(0);
+            markers = new HashSet<byte>();
 
             if (num == 0)
             {
-                for (int i = 1; i <= size; i++)
+                for (byte i = 1; i <= markerAmount; i++)
                 {
-                    possibleNumbers[i] = true;
+                    markers.Add(i);
                 }
             }
 
-            this.number = num;
+            this.value = num;
         }
 
-        internal Dictionary<int, bool> getNumberDict()
+        internal HashSet<byte> GetMarkers()
         {
-            return possibleNumbers;
+            return markers;
         }
 
-        internal void setNumberImpossible(int number)
+        internal void EditMarker(byte number, bool operation)
         {
-            possibleNumbers[number] = false;
+            if (operation)
+                markers.Remove(number);
+            else 
+                markers.Add(number);
         }
 
-        internal int getNumber()
+
+        internal byte GetValue()
         {
-            return number;
+            return value;
         }
 
-        internal void setNumber(int num)
+        internal void SetNumber(byte num)
         {
-            this.number = num;
+            this.value = num;
         }
     }
 
     internal class Board
     {
-        Cell[,] cellsBoard;
+        private Cell[,] cellsBoard;
+        private byte dimensionLen;
 
         public Board(char[,] charBoard)
         {
             if (charBoard.GetLength(0) != charBoard.GetLength(1))
-                throw new GridException("Board dimantion size are not equal");
+                throw new Exception("Board dimension size are not equal"); // Use specific exception as needed.
 
-            int dimantionLen = charBoard.GetLength(0);
-            cellsBoard = new Cell[dimantionLen, dimantionLen];
+            dimensionLen = (byte)charBoard.GetLength(0);
+            cellsBoard = new Cell[dimensionLen, dimensionLen];
 
-            for (int y = 0; y < dimantionLen; y++)
-                for (int x = 0; x < dimantionLen; x++)
-                    cellsBoard[y, x] = new Cell(charBoard[x, y] - '0', dimantionLen);
-
-        }
-
-        internal int getCellNumber(int y, int x)
-        {
-            return cellsBoard[y, x].getNumber();
-            
-        }
-
-
-
-        internal string getBoardData()
-        {
-            int dimantionLen = cellsBoard.GetLength(0);
-            string boardData = "";
-            for (int y = 0; y < dimantionLen; y++)
+            for (byte y = 0; y < dimensionLen; y++)
             {
-                for (int x = 0; x < dimantionLen; x++)
+                for (byte x = 0; x < dimensionLen; x++)
                 {
-                    string possibleNumbersString = "";
-                    Cell cell = cellsBoard[y, x];
-
-                    foreach (int number in cell.getNumberDict().Keys)
-                    {
-                        if (cell.getNumberDict()[number] == true)
-                            possibleNumbersString += number.ToString() + ", ";
-                    }
-
-                    int cellNumber = cellsBoard[y, x].getNumber();
-                    boardData += "[" + x + ", " + y + "]: " + " |" + cellNumber + "| " + possibleNumbersString + "\n";
-
+                    byte cellValue = (byte)(charBoard[y, x] - '0');
+                    cellsBoard[y, x] = new Cell(cellValue, dimensionLen);
                 }
             }
+        }
 
-            return boardData;
-        } 
-
-        internal void RemoveImpossibleNumbers()
+        public Board(byte dimensionLen)
         {
-            int dimantionLen = cellsBoard.GetLength(0);
+            this.dimensionLen = dimensionLen;
+            cellsBoard = new Cell[dimensionLen, dimensionLen];
 
-            for (int row = 0; row < dimantionLen; row++)
+            for (byte y = 0; y < dimensionLen; y++)
             {
-                for (int column = 0; column < dimantionLen; column++)
+                for (byte x = 0; x < dimensionLen; x++)
                 {
-                    for (int xIteration = 0; xIteration < dimantionLen; xIteration++)
-                    {
-                        Cell xIterationCell = cellsBoard[row, xIteration];
-                        int iterationNumber = xIterationCell.getNumber();
-                        if (iterationNumber != 0)
-                            cellsBoard[row, column].setNumberImpossible(iterationNumber);
-                    }
-
-                    for (int yIteration = 0; yIteration < dimantionLen; yIteration++)
-                    {
-                        Cell yIterationCell = cellsBoard[yIteration, column];
-                        int iterationNumber = yIterationCell.getNumber();
-                        if (iterationNumber != 0)
-                            cellsBoard[row, column].setNumberImpossible(iterationNumber);
-                    }
-
-                    int sqrt = (int)Math.Sqrt(dimantionLen);
-                    int boxRowStart = row - row % sqrt;
-                    int boxColStart = column - column % sqrt;
-
-                    for (int r = boxRowStart; r < boxRowStart + sqrt; r++)
-                    {
-                        for (int d = boxColStart; d < boxColStart + sqrt; d++)
-                        {
-                            Cell boxIterationCell = cellsBoard[r, d];
-                            int iterationNumber = boxIterationCell.getNumber();
-                            if (iterationNumber != 0)
-                                cellsBoard[row, column].setNumberImpossible(iterationNumber);
-                        }
-                    }
+                    cellsBoard[y, x] = new Cell(0, dimensionLen); // Initialize all cells with 0 and possible markers
                 }
             }
-
-            
-
         }
 
-        internal int getDimensionLen()
+        internal string GetBoardData()
         {
-            return cellsBoard.GetLength(0);
-        }
-
-        internal void setCellNumber(int row, int column, int num)
-        {
-            cellsBoard[row, column].setNumber(num);
-        }
-
-        internal IEnumerable<int> getCellPossibleNumbers(int row, int column)
-        {
-            Dictionary<int, bool> numberDict = cellsBoard[row, column].getNumberDict();
-
-            HashSet<int> possibleNumberSet = new HashSet<int>();
-            
-
-            foreach (int key in numberDict.Keys)
+            StringBuilder boardData = new StringBuilder();
+            for (byte y = 0; y < dimensionLen; y++)
             {
-                if (numberDict[key] == true)
-                    possibleNumberSet.Add(key);
-            }
-
-            return possibleNumberSet;
-        }
-
-        internal char[,] getCharBoard()
-        {
-            int dimantionLen = cellsBoard.GetLength(0);
-            char[,] charBoard = new char[dimantionLen, dimantionLen];
-
-
-            for (int row = 0; row < dimantionLen; row++)
-            {
-                for (int column = 0; column < dimantionLen; column++)
+                for (byte x = 0; x < dimensionLen; x++)
                 {
-                    int number = cellsBoard[row, column].getNumber();
+                    string possibleNumbersString = string.Join(", ", cellsBoard[y, x].GetMarkers());
+                    byte cellNumber = cellsBoard[y, x].GetValue();
+                    boardData.AppendLine($"[{x}, {y}]: |{cellNumber}| {possibleNumbersString}");
+                }
+            }
+            return boardData.ToString();
+        }
+
+        public void editMarkers(byte row, byte column, bool operation)
+        {
+            byte cellNum = cellsBoard[row, column].GetValue();
+            if (cellNum != 0)
+            {
+                EditRowMarkers(row, cellNum, operation);
+                EditColumnMarkers(column, cellNum, operation);
+                EditBoxMarker(row, column, cellNum, operation);
+            }
+        }
+
+        private void EditBoxMarker(byte row, byte column, byte marker, bool operation)
+        {
+            int sqrt = (int)Math.Sqrt(dimensionLen);
+            int boxRowStart = row - row % sqrt;
+            int boxColStart = column - column % sqrt;
+
+            for (int rowIteration = boxRowStart; rowIteration < boxRowStart + sqrt; rowIteration++)
+            {
+                for (int columnIteration = boxColStart; columnIteration < boxColStart + sqrt; columnIteration++)
+                {
+                    cellsBoard[rowIteration, columnIteration].EditMarker(marker, operation);
+                }
+            }
+        }
+
+        private void EditColumnMarkers(byte column, byte marker, bool operation)
+        {
+            for (byte i = 0; i < dimensionLen; i++)
+                cellsBoard[i, column].EditMarker(marker, operation);
+        }
+
+        private void EditRowMarkers(byte row, byte marker, bool operation)
+        {
+            for (byte i = 0; i < dimensionLen; i++)
+                cellsBoard[row, i].EditMarker(marker, operation);
+        }
+
+        internal void SetCellNumber(byte row, byte column, byte num)
+        {
+            cellsBoard[row, column].SetNumber(num);
+        }
+
+        internal char[,] GetCharBoard()
+        {
+            char[,] charBoard = new char[dimensionLen, dimensionLen];
+
+            for (byte row = 0; row < dimensionLen; row++)
+            {
+                for (byte column = 0; column < dimensionLen; column++)
+                {
+                    byte number = cellsBoard[row, column].GetValue();
                     charBoard[row, column] = (char)('0' + number);
                 }
             }
@@ -193,7 +162,7 @@ namespace sudoko_project
 
         public override string ToString()
         {
-            return StringEdit.ConvertGridToString(getCharBoard());
+            return GetBoardData();
         }
     }
 }
