@@ -45,21 +45,26 @@ namespace sudoko_project
             return value;
         }
 
-        internal void SetNumber(byte num)
+        internal void SetNumber(byte value)
         {
-            this.value = num;
+            this.value = value;
+            markers.Remove(value);
         }
 
-        internal int getMarkersCount()
+        internal byte getMarkersCount()
         {
-            return markers.Count;
+            return (byte)markers.Count;
         }
     }
 
     internal class Board
     {
         private Cell[,] cellsBoard;
+
         private byte dimensionLen;
+
+        private bool boardSolved = false;
+
 
         public Board(char[,] charBoard)
         {
@@ -77,6 +82,8 @@ namespace sudoko_project
                     cellsBoard[y, x] = new Cell(cellValue, dimensionLen);
                 }
             }
+
+            ReduceBoard();
         }
 
         public Board(byte dimensionLen)
@@ -95,7 +102,7 @@ namespace sudoko_project
 
         internal (byte, byte) FindLessMarkedCell()
         {
-            int minMarkersCount = cellsBoard[0, 0].getMarkersCount();
+            byte minMarkersCount = dimensionLen;
             byte resRow = 0;
             byte resColumn = 0;
 
@@ -104,12 +111,13 @@ namespace sudoko_project
                 for (byte colunm = 0; colunm < dimensionLen; colunm++)
                 {
                     Cell cell = cellsBoard[row, colunm];
-                    if (cell.getMarkersCount() < minMarkersCount)
-                    {
-                        resRow = row;
-                        resColumn = colunm;
-                        minMarkersCount = cell.getMarkersCount();
-                    }
+                    if (cell.GetValue() == 0)
+                        if (cell.getMarkersCount() < minMarkersCount)
+                        {
+                            resRow = row;
+                            resColumn = colunm;
+                            minMarkersCount = cell.getMarkersCount();
+                        }
                 }
             }
 
@@ -136,7 +144,7 @@ namespace sudoko_project
             editMarkersForCell(row, column, true);
         }
 
-        public void ReduceBoardMarkers()
+        public void ReduceBoard()
         {
             for (byte row = 0; row < dimensionLen; row++)
             {
@@ -232,5 +240,23 @@ namespace sudoko_project
         {
             cellsBoard[row, column].SetNumber(cellValue);
         }
+        internal bool isBoardFull()
+        {
+            for (byte row = 0; row < dimensionLen; row++)
+            {
+                for (byte column = 0; column < dimensionLen; column++)
+                {
+                    if (cellsBoard[row, column].getMarkersCount() == 0)
+                        return false;
+                }
+            }
+            return true;
+        }
+
+        internal HashSet<byte> getCellMarker(byte row, byte column)
+        {
+            return cellsBoard[row, column].GetMarkers();
+        }
+
     }
 }

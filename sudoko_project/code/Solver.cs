@@ -10,64 +10,46 @@ namespace sudoko_project
 {
     internal class Solver
     {
-        private Stack<Move> movesStack;
+        private bool isBoardSolved = false;
+
         private Board board;
 
-        public Solver() 
+        internal char[,] Solve(char[,] charBoard)
         {
-            this.movesStack = new Stack<Move>();
-        }
-
-        public void Solve(char[,] charBoard)
-        { 
             board = new Board(charBoard);
-            board.ReduceBoardMarkers();
-            BackTrack(board, 0);
-
+            solveBackTrack();
+            return board.GetCharBoard();
         }
 
-        //dont work
-        public void BackTrack(Board reducedBoard, int moves)
+        private void solveBackTrack()
         {
-            int dimensionLen = reducedBoard.getDimensionLen();
-            int totalSquares = dimensionLen * dimensionLen;
-            (byte row, byte column) = reducedBoard.FindLessMarkedCell();
-
-            if (moves < totalSquares)
+            if (!board.isBoardFull())
             {
-                board.setCellNumber(row, column, )
-                board.reduceCell(row, column);
-                BackTrack(reducedBoard, moves + 1);
+                (byte row, byte column) = board.FindLessMarkedCell();
+
+                HashSet<byte> cellMarker = board.getCellMarker(row, column);
+
+                HashSet<byte> copyCellMarkers = new HashSet<byte>(cellMarker);
+
+                foreach (byte marker in copyCellMarkers)
+                {
+                    board.setCellNumber(row, column, marker);
+                    board.reduceCell(row, column);
+
+                    if (!isBoardSolved)
+                    {
+                        solveBackTrack();
+                        board.ReverseReduceCell(row, column);
+                    }
+                }
             }
             else
             {
-                Console.WriteLine(Grider.ConvertGridToString(board.GetCharBoard()));
+                isBoardSolved = true;
             }
 
-            board.ReverseReduceCell(row, column);
-
-            
-        }
-    }
-
-    internal class Move
-    {
-        private byte row;
-
-        private byte column;
-
-        private byte cellValue;
-
-        internal Move(byte row, byte column, byte cellValue)
-        {
-            this.row = row;
-            this.column = column;
-            this.cellValue = cellValue;
         }
 
-        internal byte getRow() { return row; }
-        internal byte getColumn() { return column; }
-        internal byte getCellValue() { return cellValue; }
-
     }
+
 }

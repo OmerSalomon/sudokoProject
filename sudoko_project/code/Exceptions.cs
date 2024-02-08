@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace sudoko_project
 {
-    public class GridException : ArgumentException
+    public class BoardException : ArgumentException
     {
-        public GridException() { }
+        public BoardException() { }
 
-        public GridException(string message)
+        public BoardException(string message)
             : base(message) { }
 
     }
