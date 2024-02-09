@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -24,10 +25,15 @@ namespace sudoko_project
                         sb.Append(" "); // Add a space between characters (optional)
                     }
                 }
+
+                
+                    
+
                 if (i < rows - 1)
                 {
                     sb.AppendLine(); // Add a newline character after each row except the last
                 }
+                
             }
 
             return sb.ToString();

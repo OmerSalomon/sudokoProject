@@ -14,7 +14,35 @@ using System.Diagnostics;
 
 class Program
 {
-    public static char[,] getGridB()
+    public static char[,] GetGridD()
+    {
+        char[,] grid = {
+            {'0', '0', '0', '0', '0', '0', '0', '0', '0',},
+            {'0', '0', '0', '0', '0', '0', '0', '0', '0',},
+            {'0', '0', '0', '0', '0', '0', '0', '0', '0',},
+            {'0', '0', '0', '0', '0', '0', '0', '0', '0',},
+            {'0', '0', '0', '0', '0', '0', '0', '0', '0',},
+            {'0', '0', '0', '0', '0', '0', '0', '0', '0',},
+            {'0', '0', '0', '0', '0', '0', '0', '0', '0',},
+            {'0', '0', '0', '0', '0', '0', '0', '0', '0',},
+            {'0', '0', '0', '0', '0', '0', '0', '0', '0',}
+
+        };
+        return grid;
+    }
+
+    public static char[,] GetGridC()
+    {
+        char[,] grid = {
+            {'4', '0', '0', '2' },
+            {'0', '3', '1', '0' },
+            {'0', '0', '0', '0' },
+            {'3', '4', '0', '0' }
+        };
+        return grid;
+    }
+
+    public static char[,] GetGridB()
     {
         string input = "10023400<06000700080007003009:6;0<00:0010=0;00>0300?200>000900<0=000800:0<201?000;76000@000?005=000:05?0040800;0@0059<00100000800200000=00<580030=00?0300>80@000580010002000=9?000<406@0=00700050300<0006004;00@0700@050>0010020;1?900=002000>000>000;0200=3500<";
 
@@ -40,7 +68,7 @@ class Program
 
         return grid;
     }
-    public static char[,] getGridA()
+    public static char[,] GetGridA()
     {
         int[,] grid = new int[,] {
             { 3, 0, 6, 5, 0, 8, 4, 0, 0 },
@@ -77,7 +105,7 @@ class Program
 
 
         Stopwatch stopWatch = Stopwatch.StartNew();
-        char[,] charBoard = solver.Solve(getGridB());
+        char[,] charBoard = solver.Solve(GetGridA());
         stopWatch.Stop();
 
         Console.WriteLine(Grider.ConvertGridToString(charBoard));

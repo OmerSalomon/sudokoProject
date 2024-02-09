@@ -23,8 +23,16 @@ namespace sudoko_project
 
         private void solveBackTrack()
         {
+            Console.WriteLine(Grider.ConvertGridToString(board.GetCharBoard()));
+            Console.WriteLine();
+
+            if (!board.AllCellsHaveMarkers())
+                return;
+
             if (!board.isBoardFull())
             {
+                
+
                 (byte row, byte column) = board.FindLessMarkedCell();
 
                 HashSet<byte> cellMarker = board.getCellMarker(row, column);
@@ -34,14 +42,22 @@ namespace sudoko_project
                 foreach (byte marker in copyCellMarkers)
                 {
                     board.setCellNumber(row, column, marker);
-                    board.reduceCell(row, column);
+                    HashSet<(byte, byte)> removedMarkerCord = board.SpreadReduce(row, column, marker);
+                    solveBackTrack();
 
                     if (!isBoardSolved)
                     {
-                        solveBackTrack();
-                        board.ReverseReduceCell(row, column);
+                        board.setCellNumber(row, column, marker);
+                        foreach ((byte, byte) cord in removedMarkerCord)
+                        {
+                            board.AddMarkerToCell(row, column, marker);
+                        }
+                        board.setCellNumber(row, column, 0);
                     }
+                        
+
                 }
+
             }
             else
             {

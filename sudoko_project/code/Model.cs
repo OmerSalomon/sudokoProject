@@ -30,15 +30,15 @@ namespace sudoko_project
             return markers;
         }
 
-        internal void EditMarker(byte number, bool operation)
+        internal void RemoveMarker(byte marker)
         {
-            if (operation)
-                markers.Add(number);
-            else
-                markers.Remove(number);
-
+            markers.Remove(marker);
         }
 
+        internal void AddMarker(byte marker)
+        {
+            markers.Add(marker);
+        }
 
         internal byte GetValue()
         {
@@ -54,6 +54,19 @@ namespace sudoko_project
         internal byte getMarkersCount()
         {
             return (byte)markers.Count;
+        }
+
+        public override string ToString()
+        {
+            return value.ToString();
+        }
+
+        internal bool HasMarker(byte marker)
+        {
+            if (markers.Contains(marker))
+                return true;
+            else
+                return false;
         }
     }
 
@@ -139,18 +152,14 @@ namespace sudoko_project
             return boardData.ToString();
         }
 
-        public void ReverseReduceCell(byte row, byte column)
-        {
-            editMarkersForCell(row, column, true);
-        }
-
         public void ReduceBoard()
         {
             for (byte row = 0; row < dimensionLen; row++)
             {
                 for (byte column = 0; column < dimensionLen; column++)
                 {
-                    editMarkersForCell(row, column, false);
+                    byte cellValue = cellsBoard[row, column].GetValue();
+                    SpreadReduce(row, column, cellValue);
                 }
             }
         }
@@ -162,19 +171,11 @@ namespace sudoko_project
         /// operation = false: remove markers
         /// operation = true: add markers
         /// </summary>
-        private void editMarkersForCell(byte row, byte column, bool operation)
+        /// 
+        private HashSet<(byte, byte)> EditBoxMarker(byte row, byte column, byte marker)
         {
-            byte cellNum = cellsBoard[row, column].GetValue();
-            if (cellNum != 0)
-            {
-                EditRowMarkers(row, cellNum, operation);
-                EditColumnMarkers(column, cellNum, operation);
-                EditBoxMarker(row, column, cellNum, operation);
-            }
-        }
+            HashSet<(byte, byte)> cords = new HashSet<(byte, byte)> ();
 
-        private void EditBoxMarker(byte row, byte column, byte marker, bool operation)
-        {
             int sqrt = (int)Math.Sqrt(dimensionLen);
             int boxRowStart = row - row % sqrt;
             int boxColStart = column - column % sqrt;
@@ -183,26 +184,52 @@ namespace sudoko_project
             {
                 for (int columnIteration = boxColStart; columnIteration < boxColStart + sqrt; columnIteration++)
                 {
-                    cellsBoard[rowIteration, columnIteration].EditMarker(marker, operation);
+                    if (cellsBoard[rowIteration, columnIteration].HasMarker(marker))
+                    {
+                        cords.Add(((byte)rowIteration, (byte)columnIteration));
+                        cellsBoard[rowIteration, columnIteration].RemoveMarker(marker);
+                    }
                 }
             }
+            return cords;
         }
 
-        private void EditColumnMarkers(byte column, byte marker, bool operation)
+        private HashSet<(byte, byte)> EditColumnMarkers(byte column, byte marker)
         {
+            HashSet<(byte, byte)> res = new HashSet<(byte, byte)>();
+
             for (byte i = 0; i < dimensionLen; i++)
-                cellsBoard[i, column].EditMarker(marker, operation);
+            {
+                if (cellsBoard[i, column].HasMarker(marker))
+                {
+                    cellsBoard[i, column].RemoveMarker(marker);
+                    res.Add((i, column));
+                }
+            }
+                
+            return res;
         }
 
-        private void EditRowMarkers(byte row, byte marker, bool operation)
+        private HashSet<(byte , byte)> EditRowMarkers(byte row, byte marker)
         {
+            HashSet<(byte, byte)> res = new HashSet<(byte, byte)>();
+
             for (byte i = 0; i < dimensionLen; i++)
-                cellsBoard[row, i].EditMarker(marker, operation);
+            {
+                if (cellsBoard[row, i].HasMarker(marker))
+                {
+                    cellsBoard[row, i].RemoveMarker(marker);
+                    res.Add((row, i));
+                }
+
+            }
+
+            return res; 
         }
 
-        internal void SetCellNumber(byte row, byte column, byte num)
+        internal void SetCellValue(byte row, byte column, byte value)
         {
-            cellsBoard[row, column].SetNumber(num);
+            cellsBoard[row, column].SetNumber(value);
         }
 
         internal char[,] GetCharBoard()
@@ -226,9 +253,19 @@ namespace sudoko_project
             return GetBoardData();
         }
 
-        internal void reduceCell(byte row, byte column)
+        internal HashSet<(byte, byte)> SpreadReduce(byte row, byte column, byte marker)
         {
-            editMarkersForCell(row, column, false);
+            HashSet<(byte, byte)> res = new HashSet<(byte, byte)>();
+
+            byte cellNum = cellsBoard[row, column].GetValue();
+            if (cellNum != 0)
+            {
+                res.UnionWith(EditRowMarkers(row, marker));
+                res.UnionWith(EditColumnMarkers(column, marker));
+                res.UnionWith(EditBoxMarker(row, column, marker));
+            }
+
+            return res;
         }
 
         internal int getDimensionLen()
@@ -246,7 +283,7 @@ namespace sudoko_project
             {
                 for (byte column = 0; column < dimensionLen; column++)
                 {
-                    if (cellsBoard[row, column].getMarkersCount() == 0)
+                    if (cellsBoard[row, column].GetValue() == 0)
                         return false;
                 }
             }
@@ -258,5 +295,22 @@ namespace sudoko_project
             return cellsBoard[row, column].GetMarkers();
         }
 
+        internal void AddMarkerToCell(byte row, byte column, byte marker)
+        {
+            cellsBoard[row, column].AddMarker(marker);
+        }
+
+        internal bool AllCellsHaveMarkers()
+        {
+            for (byte row = 0; row < dimensionLen; row++)
+            {
+                for (byte column = 0; column < dimensionLen; column++)
+                {
+                    if (cellsBoard[row, column].GetValue() == 0 && cellsBoard[row, column].getMarkersCount() == 0)
+                        return false;
+                }
+            }
+            return true;
+        }
     }
 }
