@@ -17,54 +17,49 @@ namespace sudoko_project
         internal char[,] Solve(char[,] charBoard)
         {
             board = new Board(charBoard);
-            solveBackTrack();
+            board.ReduceBoard();
+            solveBackTrackB();
             return board.GetCharBoard();
         }
 
-        private void solveBackTrack()
+        private bool solveBackTrackB() 
         {
-            Console.WriteLine(Grider.ConvertGridToString(board.GetCharBoard()));
+            Console.WriteLine(board.GetFilledCellNumber());
+            //Console.WriteLine(Grider.ConvertGridToString(board.GetCharBoard()));
             Console.WriteLine();
 
+            if (board.isBoardFull())
+                return true;
+
             if (!board.AllCellsHaveMarkers())
-                return;
+                return false;
 
-            if (!board.isBoardFull())
+            (byte row, byte column) = board.FindLessMarkedCell();
+
+            HashSet<byte> cellMarkers = new HashSet<byte>(board.getCellMarker(row, column)); //copy of the set
+
+            foreach (byte marker in cellMarkers)
             {
-                
+                board.setCellValue(row, column, marker);
+                HashSet<(byte, byte)> removedMarkerCord = board.SpreadReduce(row, column, marker);
+                bool isSolved = solveBackTrackB();
 
-                (byte row, byte column) = board.FindLessMarkedCell();
-
-                HashSet<byte> cellMarker = board.getCellMarker(row, column);
-
-                HashSet<byte> copyCellMarkers = new HashSet<byte>(cellMarker);
-
-                foreach (byte marker in copyCellMarkers)
+                if (isSolved)
+                    return true;
+                else
                 {
-                    board.setCellNumber(row, column, marker);
-                    HashSet<(byte, byte)> removedMarkerCord = board.SpreadReduce(row, column, marker);
-                    solveBackTrack();
-
-                    if (!isBoardSolved)
+                    foreach ((byte a, byte b) in removedMarkerCord)
                     {
-                        board.setCellNumber(row, column, marker);
-                        foreach ((byte, byte) cord in removedMarkerCord)
-                        {
-                            board.AddMarkerToCell(row, column, marker);
-                        }
-                        board.setCellNumber(row, column, 0);
+                        board.AddMarkerToCell(a, b, marker);
                     }
-                        
-
                 }
-
-            }
-            else
-            {
-                isBoardSolved = true;
             }
 
+            board.setCellValue(row, column, 0);
+
+            return false;
         }
+
 
     }
 

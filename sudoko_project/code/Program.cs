@@ -34,10 +34,10 @@ class Program
     public static char[,] GetGridC()
     {
         char[,] grid = {
-            {'4', '0', '0', '2' },
-            {'0', '3', '1', '0' },
-            {'0', '0', '0', '0' },
-            {'3', '4', '0', '0' }
+            {'0', '0', '0', '3' },
+            {'0', '4', '0', '0' },
+            {'0', '0', '3', '2' },
+            {'0', '0', '0', '0' }
         };
         return grid;
     }
@@ -103,15 +103,12 @@ class Program
     {
         Solver solver = new Solver();
 
-
         Stopwatch stopWatch = Stopwatch.StartNew();
         char[,] charBoard = solver.Solve(GetGridA());
         stopWatch.Stop();
 
         Console.WriteLine(Grider.ConvertGridToString(charBoard));
         Console.WriteLine($"Elapsed Time is {stopWatch.ElapsedMilliseconds} ms");
-
-
     }
 }
 
