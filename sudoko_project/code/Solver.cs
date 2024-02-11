@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.SqlTypes;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text;
@@ -17,50 +18,138 @@ namespace sudoko_project
         internal char[,] Solve(char[,] charBoard)
         {
             board = new Board(charBoard);
-            board.ReduceBoard();
-            solveBackTrackB();
+
+            FirstBoardReduce();
+            SolveBackTrack();
             return board.GetCharBoard();
         }
 
-        private bool solveBackTrackB() 
+        private void FirstBoardReduce()
         {
-            Console.WriteLine(board.GetFilledCellNumber());
-            //Console.WriteLine(Grider.ConvertGridToString(board.GetCharBoard()));
+            int dimentionLen = board.GetDimensionLen();
+
+            for (byte row = 0; row < dimentionLen; row++)
+            {
+                for (byte column = 0; column < dimentionLen; column++)
+                {
+                    Cell cell = board.GetCell(row, column);
+
+                    if (cell.GetValue() != 0)
+                    {
+                        SpreadReduce(cell, cell.GetValue());
+                    }
+                }
+            }
+        }
+
+        private HashSet<Cell> SpreadReduce(Cell cell, byte marker)
+        {
+            HashSet<Cell> removedMarkerCells = new HashSet<Cell>();
+
+            foreach (Cell friend in cell.GetFriend())
+            {
+                if (friend.GetValue() == 0 && friend.HasMarker(marker))
+                {
+                    friend.RemoveMarker(marker);
+                    removedMarkerCells.Add(friend);
+                }
+            }
+
+            return removedMarkerCells;
+        }
+
+        private Cell FindLessMarkedCell()
+        {
+            Cell res = null;
+            int dimensionLen = board.GetDimensionLen();
+
+            int minMarkersCount = int.MaxValue;
+
+            for (byte row = 0; row < dimensionLen; row++)
+            {
+                for (byte colunm = 0; colunm < dimensionLen; colunm++)
+                {
+                    Cell cell = board.GetCell(row, colunm);
+                    if (cell.GetValue() == 0)
+                        if (cell.getMarkersCount() < minMarkersCount)
+                        {
+                            res = cell;
+                            minMarkersCount = cell.getMarkersCount();
+                        }
+                }
+            }
+
+            return res;
+        }
+
+        internal bool IsBoardFull()
+        {
+            int dimensionLen = board.GetDimensionLen();
+            for (byte row = 0; row < dimensionLen; row++)
+            {
+                for (byte column = 0; column < dimensionLen; column++)
+                {
+                    Cell cell = board.GetCell(row, column);
+                    if (cell.GetValue() == 0)
+                        return false;
+                }
+            }
+            return true;
+        }
+
+        internal bool AllCellsHaveMarkers()
+        {
+            int dimensionLen = board.GetDimensionLen();
+
+            for (byte row = 0; row < dimensionLen; row++)
+            {
+                for (byte column = 0; column < dimensionLen; column++)
+                {
+                    Cell cell = board.GetCell(row, column);
+                    if (cell.GetValue() == 0 && cell.getMarkersCount() == 0)
+                        return false;
+                }
+            }
+            return true;
+        }
+
+        private bool SolveBackTrack()
+        {
+            Console.WriteLine(Grider.ConvertGridToString(board.GetCharBoard()));
             Console.WriteLine();
 
-            if (board.isBoardFull())
+            if (IsBoardFull())
                 return true;
 
-            if (!board.AllCellsHaveMarkers())
+            if (!AllCellsHaveMarkers())
                 return false;
 
-            (byte row, byte column) = board.FindLessMarkedCell();
+            Cell lessMarkedCell = FindLessMarkedCell();
 
-            HashSet<byte> cellMarkers = new HashSet<byte>(board.getCellMarker(row, column)); //copy of the set
+            HashSet<byte> markersCopy = new HashSet<byte>(lessMarkedCell.GetMarkers());
 
-            foreach (byte marker in cellMarkers)
+            foreach (byte marker in markersCopy)
             {
-                board.setCellValue(row, column, marker);
-                HashSet<(byte, byte)> removedMarkerCord = board.SpreadReduce(row, column, marker);
-                bool isSolved = solveBackTrackB();
+                lessMarkedCell.SetValue(marker);
+                HashSet<Cell> removedMarkerCells = SpreadReduce(lessMarkedCell, marker);
+
+                bool isSolved = SolveBackTrack();
 
                 if (isSolved)
                     return true;
                 else
                 {
-                    foreach ((byte a, byte b) in removedMarkerCord)
+                    foreach (Cell cell in removedMarkerCells)
                     {
-                        board.AddMarkerToCell(a, b, marker);
+                        cell.AddMarker(marker);
                     }
                 }
             }
 
-            board.setCellValue(row, column, 0);
+            lessMarkedCell.SetValue(0);
 
             return false;
         }
-
-
     }
 
 }
