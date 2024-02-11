@@ -14,4 +14,21 @@ namespace sudoko_project
             : base(message) { }
 
     }
+
+    public class ReaderException : ArgumentException
+    {
+        public ReaderException() { }
+
+        public ReaderException(string message)
+            : base(message) { }
+    }
+
+    public class SudokoException : ArgumentException
+    {
+        public SudokoException() { }
+
+        public SudokoException(string message)
+            : base(message) { }
+    }
+
 }

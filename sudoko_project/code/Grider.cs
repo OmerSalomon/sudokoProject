@@ -9,6 +9,24 @@ namespace sudoko_project
 {
     internal class Grider
     {
+        public static char[,] ConvertStringToCharArr(string str)
+        {
+            int dimension = (int)Math.Sqrt(str.Length);
+
+            char[,] grid = new char[dimension, dimension];
+
+            int stringIndex = 0;
+            for (int i = 0; i < dimension; i++)
+            {
+                for (int j = 0; j < dimension; j++)
+                {
+                    grid[i, j] = str[stringIndex++];
+                }
+            }
+
+            return grid;
+        }
+
         public static string ConvertGridToString(char[,] grid)
         {
             StringBuilder sb = new StringBuilder();

@@ -10,12 +10,12 @@ namespace sudoko_project
         private HashSet<int> markers;
         private HashSet<Cell> friends;
 
-        internal Cell(int num, int markerAmount)
+        internal Cell(int value, int markerAmount)
         {
             friends = new HashSet<Cell>();
             markers = new HashSet<int>();
 
-            if (num == 0)
+            if (value == 0)
             {
                 for (int i = 1; i <= markerAmount; i++)
                 {
@@ -23,7 +23,7 @@ namespace sudoko_project
                 }
             }
 
-            this.value = num;
+            this.value = value;
         }
 
         internal HashSet<int> GetMarkers()
@@ -90,12 +90,12 @@ namespace sudoko_project
             dimensionLen = charBoard.GetLength(0);
             cellsBoard = new Cell[dimensionLen, dimensionLen];
 
-            for (int y = 0; y < dimensionLen; y++)
+            for (int row = 0; row < dimensionLen; row++)
             {
-                for (int x = 0; x < dimensionLen; x++)
+                for (int column = 0; column < dimensionLen; column++)
                 {
-                    int cellValue = charBoard[y, x] - '0';
-                    cellsBoard[y, x] = new Cell(cellValue, dimensionLen);
+                    int cellValue = charBoard[row, column] - '0';
+                    cellsBoard[row, column] = new Cell(cellValue, dimensionLen);
                 }
             }
 
@@ -191,19 +191,6 @@ namespace sudoko_project
         internal int GetDimensionLen()
         {
             return dimensionLen;
-        }
-
-        internal bool isBoardFull()
-        {
-            for (int row = 0; row < dimensionLen; row++)
-            {
-                for (int column = 0; column < dimensionLen; column++)
-                {
-                    if (cellsBoard[row, column].GetValue() == 0)
-                        return false;
-                }
-            }
-            return true;
         }
 
         internal HashSet<int> getCellMarker(int row, int column)

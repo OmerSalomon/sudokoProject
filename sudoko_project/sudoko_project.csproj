@@ -43,6 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="code\Reader.cs" />
     <Compile Include="code\Solver.cs" />
     <Compile Include="code\Exceptions.cs" />
     <Compile Include="code\Model.cs" />
@@ -52,6 +53,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="files\grid_a.txt" />
+    <Content Include="files\grid_b.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
