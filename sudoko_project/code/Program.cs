@@ -28,7 +28,7 @@ class Program
 
             if (choise == 1)
             {
-                reader = new FileReader();
+                reader = new TextFileReader();
             }
             else if (choise == 2)
             {

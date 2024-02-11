@@ -6,74 +6,35 @@ namespace sudoko_project
 {
     internal class Cell
     {
-        private int value;
-        private HashSet<int> markers;
-        private HashSet<Cell> friends;
+        public int Value { get; set; }
+        public HashSet<int> Markers { get; set; }
+        public HashSet<Cell> Friends { get; set; }
 
         internal Cell(int value, int markerAmount)
         {
-            friends = new HashSet<Cell>();
-            markers = new HashSet<int>();
+            Friends = new HashSet<Cell>();
+            Markers = new HashSet<int>();
 
             if (value == 0)
             {
                 for (int i = 1; i <= markerAmount; i++)
                 {
-                    markers.Add(i);
+                    Markers.Add(i);
                 }
             }
 
-            this.value = value;
+            this.Value = value;
         }
 
-        internal HashSet<int> GetMarkers()
-        {
-            return markers;
-        }
-
-        internal void RemoveMarker(int marker)
-        {
-            markers.Remove(marker);
-        }
-
-        internal void AddMarker(int marker)
-        {
-            markers.Add(marker);
-        }
-
-        internal int GetValue()
-        {
-            return value;
-        }
-
-        internal void SetValue(int value)
-        {
-            this.value = value;
-        }
-
-        internal int getMarkersCount()
-        {
-            return markers.Count;
-        }
 
         public override string ToString()
         {
-            return value.ToString();
+            return Value.ToString();
         }
 
         internal bool HasMarker(int marker)
         {
-            return markers.Contains(marker);
-        }
-
-        internal void AddFriend(Cell friend)
-        {
-            friends.Add(friend);
-        }
-
-        internal HashSet<Cell> GetFriend()
-        {
-            return friends;
+            return Markers.Contains(marker);
         }
     }
 
@@ -121,14 +82,14 @@ namespace sudoko_project
             {
                 Cell friend = cellsBoard[row, i];
                 if (friend != mainCell)
-                    mainCell.AddFriend(friend);
+                    mainCell.Friends.Add(friend);
             }
 
             for (int i = 0; i < dimensionLen; i++)
             {
                 Cell friend = cellsBoard[i, column];
                 if (friend != mainCell)
-                    mainCell.AddFriend(friend);
+                    mainCell.Friends.Add(friend);
             }
 
             int sqrt = (int)Math.Sqrt(dimensionLen);
@@ -141,7 +102,7 @@ namespace sudoko_project
                 {
                     Cell friend = cellsBoard[rowIteration, columnIteration];
                     if (friend != mainCell)
-                        mainCell.AddFriend(friend);
+                        mainCell.Friends.Add(friend);
                 }
             }
         }
@@ -153,8 +114,8 @@ namespace sudoko_project
             {
                 for (int x = 0; x < dimensionLen; x++)
                 {
-                    string possibleNumbersString = string.Join(", ", cellsBoard[y, x].GetMarkers());
-                    int cellNumber = cellsBoard[y, x].GetValue();
+                    string possibleNumbersString = string.Join(", ", cellsBoard[y, x].Markers);
+                    int cellNumber = cellsBoard[y, x].Value;
                     boardData.AppendLine($"[{x}, {y}]: |{cellNumber}| {possibleNumbersString}");
                 }
             }
@@ -163,7 +124,7 @@ namespace sudoko_project
 
         internal void SetCellValue(int row, int column, int value)
         {
-            cellsBoard[row, column].SetValue(value);
+            cellsBoard[row, column].Value = value;
         }
 
         internal char[,] GetCharBoard()
@@ -174,7 +135,7 @@ namespace sudoko_project
             {
                 for (int column = 0; column < dimensionLen; column++)
                 {
-                    int number = cellsBoard[row, column].GetValue();
+                    int number = cellsBoard[row, column].Value;
                     charBoard[row, column] = (char)('0' + number);
                 }
             }
@@ -195,7 +156,7 @@ namespace sudoko_project
 
         internal HashSet<int> getCellMarker(int row, int column)
         {
-            return cellsBoard[row, column].GetMarkers();
+            return cellsBoard[row, column].Markers;
         }
 
         internal Cell GetCell(int row, int column)

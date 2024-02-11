@@ -39,9 +39,9 @@ namespace sudoko_project
                 {
                     Cell cell = board.GetCell(row, column);
 
-                    foreach (Cell friend in cell.GetFriend())
+                    foreach (Cell friend in cell.Friends)
                     {
-                        if (cell.GetValue() == friend.GetValue())
+                        if (cell.Value == friend.Value)
                             return false;
                     }
                 }
@@ -60,9 +60,9 @@ namespace sudoko_project
                 {
                     Cell cell = board.GetCell(row, column);
 
-                    if (cell.GetValue() != 0)
+                    if (cell.Value != 0)
                     {
-                        FriendReduce(cell, cell.GetValue());
+                        FriendReduce(cell, cell.Value);
                     }
                 }
             }
@@ -80,7 +80,7 @@ namespace sudoko_project
                 {
                     Cell cell = board.GetCell(row, column);
 
-                    if (cell.GetValue() != 0)
+                    if (cell.Value != 0)
                     {
                         sum++;
                     }
@@ -94,11 +94,11 @@ namespace sudoko_project
         {
             HashSet<Cell> removedMarkerCells = new HashSet<Cell>();
 
-            foreach (Cell friend in cell.GetFriend())
+            foreach (Cell friend in cell.Friends)
             {
-                if (friend.GetValue() == 0 && friend.HasMarker(marker))
+                if (friend.Value == 0 && friend.HasMarker(marker))
                 {
-                    friend.RemoveMarker(marker);
+                    friend.Markers.Remove(marker);
                     removedMarkerCells.Add(friend);
                 }
             }
@@ -118,11 +118,11 @@ namespace sudoko_project
                 for (int column = 0; column < dimensionLen; column++)
                 {
                     Cell cell = board.GetCell(row, column);
-                    if (cell.GetValue() == 0)
-                        if (cell.getMarkersCount() < minMarkersCount)
+                    if (cell.Value == 0)
+                        if (cell.Markers.Count < minMarkersCount)
                         {
                             res = cell;
-                            minMarkersCount = cell.getMarkersCount();
+                            minMarkersCount = cell.Markers.Count;
                         }
                 }
             }
@@ -138,7 +138,7 @@ namespace sudoko_project
                 for (int column = 0; column < dimensionLen; column++)
                 {
                     Cell cell = board.GetCell(row, column);
-                    if (cell.GetValue() == 0)
+                    if (cell.Value == 0)
                         return false;
                 }
             }
@@ -154,7 +154,7 @@ namespace sudoko_project
                 for (int column = 0; column < dimensionLen; column++)
                 {
                     Cell cell = board.GetCell(row, column);
-                    if (cell.GetValue() == 0 && cell.getMarkersCount() == 0)
+                    if (cell.Value == 0 && cell.Markers.Count == 0)
                         return false;
                 }
             }
@@ -171,11 +171,11 @@ namespace sudoko_project
 
             Cell lessMarkedCell = FindLessMarkedCell();
 
-            HashSet<int> markersCopy = new HashSet<int>(lessMarkedCell.GetMarkers());
+            HashSet<int> markersCopy = new HashSet<int>(lessMarkedCell.Markers);
 
             foreach (int marker in markersCopy)
             {
-                lessMarkedCell.SetValue(marker);
+                lessMarkedCell.Value = marker;
                 HashSet<Cell> removedMarkerCells = FriendReduce(lessMarkedCell, marker);
 
                 bool isSolved = SolveBackTrack();
@@ -186,12 +186,12 @@ namespace sudoko_project
                 {
                     foreach (Cell cell in removedMarkerCells)
                     {
-                        cell.AddMarker(marker);
+                        cell.Markers.Add(marker);
                     }
                 }
             }
 
-            lessMarkedCell.SetValue(0);
+            lessMarkedCell.Value = 0;
 
             return false;
         }

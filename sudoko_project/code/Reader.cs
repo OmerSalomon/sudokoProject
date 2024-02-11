@@ -24,7 +24,7 @@ namespace sudoko_project.code
         }
     }
 
-    class FileReader : Reader
+    class TextFileReader : Reader
     {
         public override string Read()
         {
@@ -50,9 +50,5 @@ namespace sudoko_project.code
 
             return str;
         }
-
-        
-        
     }
-
 }
