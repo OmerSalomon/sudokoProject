@@ -1,25 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.Common;
-using System.Runtime.InteropServices.WindowsRuntime;
-using System.Security.Cryptography.X509Certificates;
 using System.Text;
 
 namespace sudoko_project
 {
     internal class Cell
     {
-        private byte value;
-        private HashSet<byte> markers;
+        private int value;
+        private HashSet<int> markers;
         private HashSet<Cell> friends;
-        internal Cell(byte num, byte markerAmount)
+
+        internal Cell(int num, int markerAmount)
         {
             friends = new HashSet<Cell>();
-            markers = new HashSet<byte>();
+            markers = new HashSet<int>();
 
             if (num == 0)
             {
-                for (byte i = 1; i <= markerAmount; i++)
+                for (int i = 1; i <= markerAmount; i++)
                 {
                     markers.Add(i);
                 }
@@ -28,34 +26,34 @@ namespace sudoko_project
             this.value = num;
         }
 
-        internal HashSet<byte> GetMarkers()
+        internal HashSet<int> GetMarkers()
         {
             return markers;
         }
 
-        internal void RemoveMarker(byte marker)
+        internal void RemoveMarker(int marker)
         {
             markers.Remove(marker);
         }
 
-        internal void AddMarker(byte marker)
+        internal void AddMarker(int marker)
         {
             markers.Add(marker);
         }
 
-        internal byte GetValue()
+        internal int GetValue()
         {
             return value;
         }
 
-        internal void SetValue(byte value)
+        internal void SetValue(int value)
         {
             this.value = value;
         }
 
-        internal byte getMarkersCount()
+        internal int getMarkersCount()
         {
-            return (byte)markers.Count;
+            return markers.Count;
         }
 
         public override string ToString()
@@ -63,12 +61,9 @@ namespace sudoko_project
             return value.ToString();
         }
 
-        internal bool HasMarker(byte marker)
+        internal bool HasMarker(int marker)
         {
-            if (markers.Contains(marker))
-                return true;
-            else
-                return false;
+            return markers.Contains(marker);
         }
 
         internal void AddFriend(Cell friend)
@@ -85,22 +80,21 @@ namespace sudoko_project
     internal class Board
     {
         private Cell[,] cellsBoard;
-
-        private byte dimensionLen;
+        private int dimensionLen;
 
         public Board(char[,] charBoard)
         {
             if (charBoard.GetLength(0) != charBoard.GetLength(1))
-                throw new Exception("Board dimension size are not equal"); // Use specific exception as needed.
+                throw new Exception("Board dimension size are not equal"); // Updated to a generic exception.
 
-            dimensionLen = (byte)charBoard.GetLength(0);
+            dimensionLen = charBoard.GetLength(0);
             cellsBoard = new Cell[dimensionLen, dimensionLen];
 
-            for (byte y = 0; y < dimensionLen; y++)
+            for (int y = 0; y < dimensionLen; y++)
             {
-                for (byte x = 0; x < dimensionLen; x++)
+                for (int x = 0; x < dimensionLen; x++)
                 {
-                    byte cellValue = (byte)(charBoard[y, x] - '0');
+                    int cellValue = charBoard[y, x] - '0';
                     cellsBoard[y, x] = new Cell(cellValue, dimensionLen);
                 }
             }
@@ -110,27 +104,27 @@ namespace sudoko_project
 
         private void CreateGraph()
         {
-            for (byte row = 0; row < dimensionLen; row++)
+            for (int row = 0; row < dimensionLen; row++)
             {
-                for (byte colunm = 0; colunm < dimensionLen; colunm++)
+                for (int column = 0; column < dimensionLen; column++)
                 {
-                    GenerateFriendsForCell(row, colunm);
+                    GenerateFriendsForCell(row, column);
                 }
             }
         }
 
-        private void GenerateFriendsForCell(byte row, byte column)
+        private void GenerateFriendsForCell(int row, int column)
         {
             Cell mainCell = cellsBoard[row, column];
 
-            for (byte i = 0; i < dimensionLen; i++)
+            for (int i = 0; i < dimensionLen; i++)
             {
                 Cell friend = cellsBoard[row, i];
                 if (friend != mainCell)
                     mainCell.AddFriend(friend);
             }
 
-            for (byte i = 0; i < dimensionLen; i++)
+            for (int i = 0; i < dimensionLen; i++)
             {
                 Cell friend = cellsBoard[i, column];
                 if (friend != mainCell)
@@ -155,19 +149,19 @@ namespace sudoko_project
         internal string GetBoardData()
         {
             StringBuilder boardData = new StringBuilder();
-            for (byte y = 0; y < dimensionLen; y++)
+            for (int y = 0; y < dimensionLen; y++)
             {
-                for (byte x = 0; x < dimensionLen; x++)
+                for (int x = 0; x < dimensionLen; x++)
                 {
                     string possibleNumbersString = string.Join(", ", cellsBoard[y, x].GetMarkers());
-                    byte cellNumber = cellsBoard[y, x].GetValue();
+                    int cellNumber = cellsBoard[y, x].GetValue();
                     boardData.AppendLine($"[{x}, {y}]: |{cellNumber}| {possibleNumbersString}");
                 }
             }
             return boardData.ToString();
         }
 
-        internal void SetCellValue(byte row, byte column, byte value)
+        internal void SetCellValue(int row, int column, int value)
         {
             cellsBoard[row, column].SetValue(value);
         }
@@ -176,11 +170,11 @@ namespace sudoko_project
         {
             char[,] charBoard = new char[dimensionLen, dimensionLen];
 
-            for (byte row = 0; row < dimensionLen; row++)
+            for (int row = 0; row < dimensionLen; row++)
             {
-                for (byte column = 0; column < dimensionLen; column++)
+                for (int column = 0; column < dimensionLen; column++)
                 {
-                    byte number = cellsBoard[row, column].GetValue();
+                    int number = cellsBoard[row, column].GetValue();
                     charBoard[row, column] = (char)('0' + number);
                 }
             }
@@ -190,9 +184,9 @@ namespace sudoko_project
 
         public override string ToString()
         {
+            // Assuming Grider.ConvertGridToString exists and can handle the updated types
             return Grider.ConvertGridToString(GetCharBoard());
         }
-
 
         internal int GetDimensionLen()
         {
@@ -201,9 +195,9 @@ namespace sudoko_project
 
         internal bool isBoardFull()
         {
-            for (byte row = 0; row < dimensionLen; row++)
+            for (int row = 0; row < dimensionLen; row++)
             {
-                for (byte column = 0; column < dimensionLen; column++)
+                for (int column = 0; column < dimensionLen; column++)
                 {
                     if (cellsBoard[row, column].GetValue() == 0)
                         return false;
@@ -212,14 +206,14 @@ namespace sudoko_project
             return true;
         }
 
-        internal HashSet<byte> getCellMarker(byte row, byte column)
+        internal HashSet<int> getCellMarker(int row, int column)
         {
             return cellsBoard[row, column].GetMarkers();
         }
 
-        internal Cell GetCell(byte row, byte colunm)
+        internal Cell GetCell(int row, int column)
         {
-            return cellsBoard[row, colunm];
+            return cellsBoard[row, column];
         }
     }
 }

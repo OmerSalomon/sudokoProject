@@ -99,7 +99,7 @@ class Program
 
         Stopwatch stopWatch = Stopwatch.StartNew();
 
-        char[,] charBoard = solver.Solve(GetGridA());
+        char[,] charBoard = solver.Solve(GetGridB());
 
         stopWatch.Stop();
 

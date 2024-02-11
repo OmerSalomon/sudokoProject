@@ -18,7 +18,6 @@ namespace sudoko_project
         internal char[,] Solve(char[,] charBoard)
         {
             board = new Board(charBoard);
-
             FirstBoardReduce();
             SolveBackTrack();
             return board.GetCharBoard();
@@ -26,11 +25,11 @@ namespace sudoko_project
 
         private void FirstBoardReduce()
         {
-            int dimentionLen = board.GetDimensionLen();
+            int dimensionLen = board.GetDimensionLen();
 
-            for (byte row = 0; row < dimentionLen; row++)
+            for (int row = 0; row < dimensionLen; row++)
             {
-                for (byte column = 0; column < dimentionLen; column++)
+                for (int column = 0; column < dimensionLen; column++)
                 {
                     Cell cell = board.GetCell(row, column);
 
@@ -42,7 +41,7 @@ namespace sudoko_project
             }
         }
 
-        private HashSet<Cell> SpreadReduce(Cell cell, byte marker)
+        private HashSet<Cell> SpreadReduce(Cell cell, int marker)
         {
             HashSet<Cell> removedMarkerCells = new HashSet<Cell>();
 
@@ -65,11 +64,11 @@ namespace sudoko_project
 
             int minMarkersCount = int.MaxValue;
 
-            for (byte row = 0; row < dimensionLen; row++)
+            for (int row = 0; row < dimensionLen; row++)
             {
-                for (byte colunm = 0; colunm < dimensionLen; colunm++)
+                for (int column = 0; column < dimensionLen; column++)
                 {
-                    Cell cell = board.GetCell(row, colunm);
+                    Cell cell = board.GetCell(row, column);
                     if (cell.GetValue() == 0)
                         if (cell.getMarkersCount() < minMarkersCount)
                         {
@@ -85,9 +84,9 @@ namespace sudoko_project
         internal bool IsBoardFull()
         {
             int dimensionLen = board.GetDimensionLen();
-            for (byte row = 0; row < dimensionLen; row++)
+            for (int row = 0; row < dimensionLen; row++)
             {
-                for (byte column = 0; column < dimensionLen; column++)
+                for (int column = 0; column < dimensionLen; column++)
                 {
                     Cell cell = board.GetCell(row, column);
                     if (cell.GetValue() == 0)
@@ -101,9 +100,9 @@ namespace sudoko_project
         {
             int dimensionLen = board.GetDimensionLen();
 
-            for (byte row = 0; row < dimensionLen; row++)
+            for (int row = 0; row < dimensionLen; row++)
             {
-                for (byte column = 0; column < dimensionLen; column++)
+                for (int column = 0; column < dimensionLen; column++)
                 {
                     Cell cell = board.GetCell(row, column);
                     if (cell.GetValue() == 0 && cell.getMarkersCount() == 0)
@@ -115,9 +114,6 @@ namespace sudoko_project
 
         private bool SolveBackTrack()
         {
-            Console.WriteLine(Grider.ConvertGridToString(board.GetCharBoard()));
-            Console.WriteLine();
-
             if (IsBoardFull())
                 return true;
 
@@ -126,9 +122,9 @@ namespace sudoko_project
 
             Cell lessMarkedCell = FindLessMarkedCell();
 
-            HashSet<byte> markersCopy = new HashSet<byte>(lessMarkedCell.GetMarkers());
+            HashSet<int> markersCopy = new HashSet<int>(lessMarkedCell.GetMarkers());
 
-            foreach (byte marker in markersCopy)
+            foreach (int marker in markersCopy)
             {
                 lessMarkedCell.SetValue(marker);
                 HashSet<Cell> removedMarkerCells = SpreadReduce(lessMarkedCell, marker);
@@ -151,5 +147,4 @@ namespace sudoko_project
             return false;
         }
     }
-
 }
