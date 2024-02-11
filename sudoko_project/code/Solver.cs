@@ -18,10 +18,10 @@ namespace sudoko_project
             board = new Board(charBoard);
             FirstBoardReduce();
 
-            SolveBackTrack();
-
             if (!IsBoardValid())
                 throw new Exception("Sudoko is invalid");
+
+            SolveBackTrack();
 
             if (!IsBoardFull())
                 throw new SudokoException("Sudoko is unsolvable");
@@ -39,10 +39,13 @@ namespace sudoko_project
                 {
                     Cell cell = board.GetCell(row, column);
 
-                    foreach (Cell friend in cell.Friends)
+                    if (cell.Value != 0)
                     {
-                        if (cell.Value == friend.Value)
-                            return false;
+                        foreach (Cell friend in cell.TotalFriends)
+                        {
+                            if (cell.Value == friend.Value)
+                                return false;
+                        }
                     }
                 }
             }
@@ -62,7 +65,7 @@ namespace sudoko_project
 
                     if (cell.Value != 0)
                     {
-                        FriendReduce(cell, cell.Value);
+                        UnitReduce(cell, cell.TotalFriends, cell.Value);
                     }
                 }
             }
@@ -90,11 +93,11 @@ namespace sudoko_project
             return sum;
         }
 
-        private HashSet<Cell> FriendReduce(Cell cell, int marker)
+        private HashSet<Cell> UnitReduce(Cell cell, HashSet<Cell> unit, int marker)
         {
             HashSet<Cell> removedMarkerCells = new HashSet<Cell>();
 
-            foreach (Cell friend in cell.Friends)
+            foreach (Cell friend in unit)
             {
                 if (friend.Value == 0 && friend.HasMarker(marker))
                 {
@@ -173,10 +176,14 @@ namespace sudoko_project
 
             HashSet<int> markersCopy = new HashSet<int>(lessMarkedCell.Markers);
 
+            if (IsThereHiddenPairInUnit(lessMarkedCell, lessMarkedCell.RowFriends))
+
+                
+
             foreach (int marker in markersCopy)
             {
                 lessMarkedCell.Value = marker;
-                HashSet<Cell> removedMarkerCells = FriendReduce(lessMarkedCell, marker);
+                HashSet<Cell> FriendReduceAffectedCells = UnitReduce(lessMarkedCell, lessMarkedCell.TotalFriends ,marker);
 
                 bool isSolved = SolveBackTrack();
 
@@ -184,7 +191,7 @@ namespace sudoko_project
                     return true;
                 else
                 {
-                    foreach (Cell cell in removedMarkerCells)
+                    foreach (Cell cell in FriendReduceAffectedCells)
                     {
                         cell.Markers.Add(marker);
                     }
@@ -195,5 +202,16 @@ namespace sudoko_project
 
             return false;
         }
+
+        private bool IsThereHiddenPairInUnit(Cell mainCell, HashSet<Cell> unit)
+        {
+            foreach (Cell cell in unit)
+                if (mainCell != cell && mainCell.Equals(cell))
+                    return true;
+
+            return false;
+        }
+
+        
     }
 }

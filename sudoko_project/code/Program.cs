@@ -15,7 +15,7 @@ using sudoko_project.code;
 
 class Program
 {
-    public static void Main(String[] args)
+    public static void Start()
     {
         string input = null;
 
@@ -45,7 +45,7 @@ class Program
 
             try
             {
-                input = reader.Read(); 
+                input = reader.Read();
             }
             catch (Exception e)
             {
@@ -61,14 +61,20 @@ class Program
             Console.WriteLine(Grider.ConvertGridToString(solvedBoard));
 
         }
-        catch (Exception e) 
+        catch (Exception e)
         {
             Console.WriteLine(e.Message);
         }
     }
 
-    // Driver Code
+    public static void Main(String[] args)
+    {
+        Solver solver = new Solver();
+        string input = "000000000000003085001020000000507000004000100090000000500000073002010000000040009";
+        char[,] charBoard = Grider.ConvertStringToCharArr(input);
+        char[,] solvedBoard = solver.Solve(charBoard);
+        Console.WriteLine(Grider.ConvertGridToString(solvedBoard));
+
+    }
 
 }
-
-// This code has been contributed by 29AjayKumar

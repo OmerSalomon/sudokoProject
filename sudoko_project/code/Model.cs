@@ -7,12 +7,19 @@ namespace sudoko_project
     internal class Cell
     {
         public int Value { get; set; }
+        public HashSet<Cell> TotalFriends { get; set; }
         public HashSet<int> Markers { get; set; }
-        public HashSet<Cell> Friends { get; set; }
+        public HashSet<Cell> RowFriends { get; set; }
+        public HashSet<Cell> ColumnFriend { get; set; }
+        public HashSet<Cell> boxFriend { get; set; }
+
 
         internal Cell(int value, int markerAmount)
         {
-            Friends = new HashSet<Cell>();
+            TotalFriends = new HashSet<Cell>();
+            RowFriends = new HashSet<Cell>();
+            ColumnFriend = new HashSet<Cell>();
+            boxFriend = new HashSet<Cell>();
             Markers = new HashSet<int>();
 
             if (value == 0)
@@ -82,14 +89,14 @@ namespace sudoko_project
             {
                 Cell friend = cellsBoard[row, i];
                 if (friend != mainCell)
-                    mainCell.Friends.Add(friend);
+                    mainCell.RowFriends.Add(friend);
             }
 
             for (int i = 0; i < dimensionLen; i++)
             {
                 Cell friend = cellsBoard[i, column];
                 if (friend != mainCell)
-                    mainCell.Friends.Add(friend);
+                    mainCell.ColumnFriend.Add(friend);
             }
 
             int sqrt = (int)Math.Sqrt(dimensionLen);
@@ -102,9 +109,13 @@ namespace sudoko_project
                 {
                     Cell friend = cellsBoard[rowIteration, columnIteration];
                     if (friend != mainCell)
-                        mainCell.Friends.Add(friend);
+                        mainCell.boxFriend.Add(friend);
                 }
             }
+            
+            mainCell.TotalFriends.UnionWith(mainCell.RowFriends);
+            mainCell.TotalFriends.UnionWith(mainCell.ColumnFriend);
+            mainCell.TotalFriends.UnionWith(mainCell.boxFriend);
         }
 
         internal string GetBoardData()
