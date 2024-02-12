@@ -41,12 +41,15 @@ namespace sudoko_project
     internal class Board
     {
         private Cell[,] cellsBoard;
+        public HashSet<Cell> EmptyCells { get; set;}
         private int dimensionLen;
 
         public Board(char[,] charBoard)
         {
             if (charBoard.GetLength(0) != charBoard.GetLength(1))
                 throw new Exception("Board dimension size are not equal"); // Updated to a generic exception.
+
+            EmptyCells = new HashSet<Cell>();
 
             dimensionLen = charBoard.GetLength(0);
             cellsBoard = new Cell[dimensionLen, dimensionLen];
@@ -56,7 +59,9 @@ namespace sudoko_project
                 for (int column = 0; column < dimensionLen; column++)
                 {
                     int cellValue = charBoard[row, column] - '0';
-                    cellsBoard[row, column] = new Cell(cellValue, dimensionLen);
+                    Cell cell = new Cell(cellValue, dimensionLen);
+                    cellsBoard[row, column] = cell;
+                    EmptyCells.Add(cell);
                 }
             }
 

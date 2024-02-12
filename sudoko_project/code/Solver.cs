@@ -39,11 +39,15 @@ namespace sudoko_project
                 {
                     Cell cell = board.GetCell(row, column);
 
-                    foreach (Cell friend in cell.Friends)
+                    if (cell.Value != 0)
                     {
-                        if (cell.Value == friend.Value)
-                            return false;
+                        foreach (Cell friend in cell.Friends)
+                        {
+                            if (cell.Value == friend.Value)
+                                return false;
+                        }
                     }
+
                 }
             }
 
@@ -106,24 +110,18 @@ namespace sudoko_project
             return removedMarkerCells;
         }
 
-        private Cell FindLessMarkedCell()
+        private Cell FindLessMarkedCell(HashSet<Cell> emptyCells)
         {
             Cell res = null;
-            int dimensionLen = board.GetDimensionLen();
 
             int minMarkersCount = int.MaxValue;
 
-            for (int row = 0; row < dimensionLen; row++)
+            foreach (Cell cell in emptyCells)
             {
-                for (int column = 0; column < dimensionLen; column++)
+                if (cell.Markers.Count < minMarkersCount)
                 {
-                    Cell cell = board.GetCell(row, column);
-                    if (cell.Value == 0)
-                        if (cell.Markers.Count < minMarkersCount)
-                        {
-                            res = cell;
-                            minMarkersCount = cell.Markers.Count;
-                        }
+                    res = cell;
+                    minMarkersCount = cell.Markers.Count;
                 }
             }
 
@@ -169,7 +167,10 @@ namespace sudoko_project
             if (!AllCellsHaveMarkers())
                 return false;
 
-            Cell lessMarkedCell = FindLessMarkedCell();
+
+            Cell lessMarkedCell = FindLessMarkedCell(board.EmptyCells);
+            board.EmptyCells.Remove(lessMarkedCell);
+
 
             HashSet<int> markersCopy = new HashSet<int>(lessMarkedCell.Markers);
 
@@ -191,6 +192,7 @@ namespace sudoko_project
                 }
             }
 
+            board.EmptyCells.Add(lessMarkedCell);
             lessMarkedCell.Value = 0;
 
             return false;
