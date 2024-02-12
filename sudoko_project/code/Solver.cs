@@ -23,7 +23,7 @@ namespace sudoko_project
             if (!IsBoardValid())
                 throw new Exception("Sudoko is invalid");
 
-            if (!IsBoardFull())
+            if (board.EmptyCells.Count != 0)
                 throw new SudokoException("Sudoko is unsolvable");
 
             return board.GetCharBoard();
@@ -128,43 +128,22 @@ namespace sudoko_project
             return res;
         }
 
-        internal bool IsBoardFull()
+        internal bool AllCellsHaveMarkers(HashSet<Cell> emptyCells)
         {
-            int dimensionLen = board.GetDimensionLen();
-            for (int row = 0; row < dimensionLen; row++)
+            foreach (Cell cell in emptyCells)
             {
-                for (int column = 0; column < dimensionLen; column++)
-                {
-                    Cell cell = board.GetCell(row, column);
-                    if (cell.Value == 0)
-                        return false;
-                }
-            }
-            return true;
-        }
-
-        internal bool AllCellsHaveMarkers()
-        {
-            int dimensionLen = board.GetDimensionLen();
-
-            for (int row = 0; row < dimensionLen; row++)
-            {
-                for (int column = 0; column < dimensionLen; column++)
-                {
-                    Cell cell = board.GetCell(row, column);
-                    if (cell.Value == 0 && cell.Markers.Count == 0)
-                        return false;
-                }
+                if (cell.Markers.Count == 0)
+                    return false;
             }
             return true;
         }
 
         private bool SolveBackTrack()
         {
-            if (IsBoardFull())
+            if (board.EmptyCells.Count == 0)
                 return true;
 
-            if (!AllCellsHaveMarkers())
+            if (!AllCellsHaveMarkers(board.EmptyCells))
                 return false;
 
 

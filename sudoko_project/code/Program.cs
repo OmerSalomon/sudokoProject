@@ -74,17 +74,26 @@ class Program
                 Console.WriteLine(e.Message);
             }
         }
+    }
 
-    
-}
-
-    public static void Main(String[] args)
+    public static void Debug()
     {
         string input = "000000000000003085001020000000507000004000100090000000500000073002010000000040009";
         Solver solver = new Solver();
         char[,] charBoard = Grider.ConvertStringToCharArr(input);
 
+        Stopwatch stopWatch = Stopwatch.StartNew();
+
         Console.WriteLine(Grider.ConvertGridToString(solver.Solve(charBoard)));
+
+        stopWatch.Stop();
+        Console.WriteLine();
+        Console.WriteLine($"Elapsed time: {stopWatch.ElapsedMilliseconds} ms");
+    }
+
+    public static void Main(String[] args)
+    {
+        Debug();
     }
     
         

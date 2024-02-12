@@ -61,7 +61,8 @@ namespace sudoko_project
                     int cellValue = charBoard[row, column] - '0';
                     Cell cell = new Cell(cellValue, dimensionLen);
                     cellsBoard[row, column] = cell;
-                    EmptyCells.Add(cell);
+                    if (cell.Value == 0)
+                        EmptyCells.Add(cell);
                 }
             }
 
