@@ -57,8 +57,12 @@ class Program
         char[,] charBoard = Grider.ConvertStringToCharArr(input);
         try
         {
+            Stopwatch stopwatch = Stopwatch.StartNew();
             char[,] solvedBoard = solver.Solve(charBoard);
+            stopwatch.Stop();
+
             Console.WriteLine(Grider.ConvertGridToString(solvedBoard));
+            Console.WriteLine($"Elapsed time: {stopwatch.ElapsedMilliseconds} ms");
 
         }
         catch (Exception e) 
