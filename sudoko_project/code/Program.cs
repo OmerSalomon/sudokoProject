@@ -65,9 +65,16 @@ class Program
             char[,] charBoard = Grider.ConvertStringToCharArr(input);
             try
             {
+                Stopwatch stopWatch = Stopwatch.StartNew();
+
                 char[,] solvedBoard = solver.Solve(charBoard);
+
+                stopWatch.Stop();
+
+
                 Console.WriteLine(Grider.ConvertGridToString(solvedBoard));
 
+                Console.WriteLine($"Elapsed time: {stopWatch.ElapsedMilliseconds} ms");
             }
             catch (Exception e)
             {
@@ -93,7 +100,7 @@ class Program
 
     public static void Main(String[] args)
     {
-        Debug();
+        Start();
     }
     
         
