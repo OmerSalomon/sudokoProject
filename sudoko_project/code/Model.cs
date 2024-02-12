@@ -32,17 +32,13 @@ namespace sudoko_project
             return Value.ToString();
         }
 
-        internal bool HasMarker(int marker)
-        {
-            return Markers.Contains(marker);
-        }
     }
 
     internal class Board
     {
-        private Cell[,] cellsBoard;
-        public HashSet<Cell> EmptyCells { get; set;}
-        private int dimensionLen;
+        public Cell[,] CellsBoard { get; }
+        public HashSet<Cell> EmptyCells { get;}
+        public int Len { get;}
 
         public Board(char[,] charBoard)
         {
@@ -51,16 +47,16 @@ namespace sudoko_project
 
             EmptyCells = new HashSet<Cell>();
 
-            dimensionLen = charBoard.GetLength(0);
-            cellsBoard = new Cell[dimensionLen, dimensionLen];
+            Len = charBoard.GetLength(0);
+            CellsBoard = new Cell[Len, Len];
 
-            for (int row = 0; row < dimensionLen; row++)
+            for (int row = 0; row < Len; row++)
             {
-                for (int column = 0; column < dimensionLen; column++)
+                for (int column = 0; column < Len; column++)
                 {
                     int cellValue = charBoard[row, column] - '0';
-                    Cell cell = new Cell(cellValue, dimensionLen);
-                    cellsBoard[row, column] = cell;
+                    Cell cell = new Cell(cellValue, Len);
+                    CellsBoard[row, column] = cell;
                     if (cell.Value == 0)
                         EmptyCells.Add(cell);
                 }
@@ -71,9 +67,9 @@ namespace sudoko_project
 
         private void CreateGraph()
         {
-            for (int row = 0; row < dimensionLen; row++)
+            for (int row = 0; row < Len; row++)
             {
-                for (int column = 0; column < dimensionLen; column++)
+                for (int column = 0; column < Len; column++)
                 {
                     GenerateFriendsForCell(row, column);
                 }
@@ -82,23 +78,23 @@ namespace sudoko_project
 
         private void GenerateFriendsForCell(int row, int column)
         {
-            Cell mainCell = cellsBoard[row, column];
+            Cell mainCell = CellsBoard[row, column];
 
-            for (int i = 0; i < dimensionLen; i++)
+            for (int i = 0; i < Len; i++)
             {
-                Cell friend = cellsBoard[row, i];
+                Cell friend = CellsBoard[row, i];
                 if (friend != mainCell)
                     mainCell.Friends.Add(friend);
             }
 
-            for (int i = 0; i < dimensionLen; i++)
+            for (int i = 0; i < Len; i++)
             {
-                Cell friend = cellsBoard[i, column];
+                Cell friend = CellsBoard[i, column];
                 if (friend != mainCell)
                     mainCell.Friends.Add(friend);
             }
 
-            int sqrt = (int)Math.Sqrt(dimensionLen);
+            int sqrt = (int)Math.Sqrt(Len);
             int boxRowStart = row - row % sqrt;
             int boxColStart = column - column % sqrt;
 
@@ -106,7 +102,7 @@ namespace sudoko_project
             {
                 for (int columnIteration = boxColStart; columnIteration < boxColStart + sqrt; columnIteration++)
                 {
-                    Cell friend = cellsBoard[rowIteration, columnIteration];
+                    Cell friend = CellsBoard[rowIteration, columnIteration];
                     if (friend != mainCell)
                         mainCell.Friends.Add(friend);
                 }
@@ -116,12 +112,12 @@ namespace sudoko_project
         internal string GetBoardData()
         {
             StringBuilder boardData = new StringBuilder();
-            for (int y = 0; y < dimensionLen; y++)
+            for (int y = 0; y < Len; y++)
             {
-                for (int x = 0; x < dimensionLen; x++)
+                for (int x = 0; x < Len; x++)
                 {
-                    string possibleNumbersString = string.Join(", ", cellsBoard[y, x].Markers);
-                    int cellNumber = cellsBoard[y, x].Value;
+                    string possibleNumbersString = string.Join(", ", CellsBoard[y, x].Markers);
+                    int cellNumber = CellsBoard[y, x].Value;
                     boardData.AppendLine($"[{x}, {y}]: |{cellNumber}| {possibleNumbersString}");
                 }
             }
@@ -130,18 +126,18 @@ namespace sudoko_project
 
         internal void SetCellValue(int row, int column, int value)
         {
-            cellsBoard[row, column].Value = value;
+            CellsBoard[row, column].Value = value;
         }
 
         internal char[,] GetCharBoard()
         {
-            char[,] charBoard = new char[dimensionLen, dimensionLen];
+            char[,] charBoard = new char[Len, Len];
 
-            for (int row = 0; row < dimensionLen; row++)
+            for (int row = 0; row < Len; row++)
             {
-                for (int column = 0; column < dimensionLen; column++)
+                for (int column = 0; column < Len; column++)
                 {
-                    int number = cellsBoard[row, column].Value;
+                    int number = CellsBoard[row, column].Value;
                     charBoard[row, column] = (char)('0' + number);
                 }
             }
@@ -153,21 +149,6 @@ namespace sudoko_project
         {
             // Assuming Grider.ConvertGridToString exists and can handle the updated types
             return Grider.ConvertGridToString(GetCharBoard());
-        }
-
-        internal int GetDimensionLen()
-        {
-            return dimensionLen;
-        }
-
-        internal HashSet<int> getCellMarker(int row, int column)
-        {
-            return cellsBoard[row, column].Markers;
-        }
-
-        internal Cell GetCell(int row, int column)
-        {
-            return cellsBoard[row, column];
         }
     }
 }

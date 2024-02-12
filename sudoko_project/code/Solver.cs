@@ -12,7 +12,6 @@ namespace sudoko_project
     internal class Solver
     {
         private Board board;
-
         internal char[,] Solve(char[,] charBoard)
         {
             board = new Board(charBoard);
@@ -31,13 +30,13 @@ namespace sudoko_project
 
         private bool IsBoardValid()
         {
-            int dimensionLen = board.GetDimensionLen();
+            int dimensionLen = board.Len;
 
             for (int row = 0; row < dimensionLen; row++)
             {
                 for (int column = 0; column < dimensionLen; column++)
                 {
-                    Cell cell = board.GetCell(row, column);
+                    Cell cell = board.CellsBoard[row, column];
 
                     if (cell.Value != 0)
                     {
@@ -56,17 +55,17 @@ namespace sudoko_project
 
         private void FirstBoardReduce()
         {
-            int dimensionLen = board.GetDimensionLen();
+            int dimensionLen = board.Len;
 
             for (int row = 0; row < dimensionLen; row++)
             {
                 for (int column = 0; column < dimensionLen; column++)
                 {
-                    Cell cell = board.GetCell(row, column);
+                    Cell cell = board.CellsBoard[row, column];
 
                     if (cell.Value != 0)
                     {
-                        FriendReduce(cell, cell.Value);
+                        ReduceCells(cell.Friends, cell.Value);
                     }
                 }
             }
@@ -76,13 +75,13 @@ namespace sudoko_project
         {
             int sum = 0;
 
-            int dimensionLen = board.GetDimensionLen();
+            int dimensionLen = board.Len;
 
             for (int row = 0; row < dimensionLen; row++)
             {
                 for (int column = 0; column < dimensionLen; column++)
                 {
-                    Cell cell = board.GetCell(row, column);
+                    Cell cell = board.CellsBoard[row, column];
 
                     if (cell.Value != 0)
                     {
@@ -94,13 +93,13 @@ namespace sudoko_project
             return sum;
         }
 
-        private HashSet<Cell> FriendReduce(Cell cell, int marker)
+        private HashSet<Cell> ReduceCells(HashSet<Cell> cells, int marker)
         {
             HashSet<Cell> removedMarkerCells = new HashSet<Cell>();
 
-            foreach (Cell friend in cell.Friends)
+            foreach (Cell friend in cells)
             {
-                if (friend.Value == 0 && friend.HasMarker(marker))
+                if (friend.Value == 0 && friend.Markers.Contains(marker))
                 {
                     friend.Markers.Remove(marker);
                     removedMarkerCells.Add(friend);
@@ -118,6 +117,9 @@ namespace sudoko_project
 
             foreach (Cell cell in emptyCells)
             {
+                if (cell.Markers.Count == 0)
+                    return cell;
+
                 if (cell.Markers.Count < minMarkersCount)
                 {
                     res = cell;
@@ -142,7 +144,7 @@ namespace sudoko_project
             foreach (int marker in markersCopy)
             {
                 lessMarkedCell.Value = marker;
-                HashSet<Cell> removedMarkerCells = FriendReduce(lessMarkedCell, marker);
+                HashSet<Cell> removedMarkerCells = ReduceCells(lessMarkedCell.Friends, marker);
 
                 bool isSolved = SolveBackTrack();
 
