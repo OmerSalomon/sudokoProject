@@ -15,63 +15,97 @@ using sudoko_project.code;
 
 class Program
 {
-    public static void Main(String[] args)
+    public static void Start()
     {
         string input = null;
 
-        while (input == null) // Changed to an infinite loop with a clear exit strategy
+        Reader reader = null;
+        int choise = -1;
+        Console.WriteLine("Choose: \n 1- Read from file \n 2- Read from CLI \n 3- Exit"); // Added an exit option
+
+        while (!(choise > 0 && choise <= 3))
         {
-            Reader reader = null;
-
-            Console.WriteLine("Choose: \n 1- Read from file \n 2- Read from CLI \n 3- Exit"); // Added an exit option
-            int.TryParse(Console.ReadLine(), out int choise);
-
-            if (choise == 1)
-            {
-                reader = new TextFileReader();
-            }
-            else if (choise == 2)
-            {
-                reader = new CLIReader();
-            }
-            else if (choise == 3)
-            {
-                return;
-            }
-            else
-            {
-                Console.WriteLine($"{choise} is invalid number please enter a valid one");
-            }
-
             try
             {
-                input = reader.Read(); 
+                choise = int.Parse(Console.ReadLine());
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+        }
+
+
+
+        if (choise == 1)
+        {
+            reader = new TextFileReader();
+        }
+        else if (choise == 2)
+        {
+            reader = new CLIReader();
+        }
+        else if (choise == 3)
+        {
+            return;
+        }
+
+        try
+        {
+            input = reader.Read();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e.Message);
+        }
+
+        if (input != null)
+        {
+            Solver solver = new Solver();
+            char[,] charBoard = Grider.ConvertStringToCharArr(input);
+            try
+            {
+                Stopwatch stopWatch = Stopwatch.StartNew();
+
+                char[,] solvedBoard = solver.Solve(charBoard);
+
+                stopWatch.Stop();
+
+
+                Console.WriteLine(Grider.ConvertGridToString(solvedBoard));
+
+                Console.WriteLine($"Elapsed time: {stopWatch.ElapsedMilliseconds} ms");
             }
             catch (Exception e)
             {
                 Console.WriteLine(e.Message);
             }
         }
-
-        Solver solver = new Solver();
-        char[,] charBoard = Grider.ConvertStringToCharArr(input);
-        try
-        {
-            Stopwatch stopwatch = Stopwatch.StartNew();
-            char[,] solvedBoard = solver.Solve(charBoard);
-            stopwatch.Stop();
-
-            Console.WriteLine(Grider.ConvertGridToString(solvedBoard));
-            Console.WriteLine($"Elapsed time: {stopwatch.ElapsedMilliseconds} ms");
-
-        }
-        catch (Exception e) 
-        {
-            Console.WriteLine(e.Message);
-        }
     }
 
-    // Driver Code
+    public static void Debug()
+    {
+        string input = "000000000000003085001020000000507000004000100090000000500000073002010000000040009";
+        Solver solver = new Solver();
+        char[,] charBoard = Grider.ConvertStringToCharArr(input);
+
+        Stopwatch stopWatch = Stopwatch.StartNew();
+
+        Console.WriteLine(Grider.ConvertGridToString(solver.Solve(charBoard)));
+
+        stopWatch.Stop();
+        Console.WriteLine();
+        Console.WriteLine($"Elapsed time: {stopWatch.ElapsedMilliseconds} ms");
+    }
+
+    public static void Main(String[] args)
+    {
+        Start();
+    }
+    
+        
+
+    
 
 }
 

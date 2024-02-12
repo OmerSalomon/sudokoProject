@@ -23,7 +23,7 @@ namespace sudoko_project
             if (!IsBoardValid())
                 throw new Exception("Sudoko is invalid");
 
-            if (!IsBoardFull())
+            if (board.EmptyCells.Count != 0)
                 throw new SudokoException("Sudoko is unsolvable");
 
             return board.GetCharBoard();
@@ -39,11 +39,15 @@ namespace sudoko_project
                 {
                     Cell cell = board.GetCell(row, column);
 
-                    foreach (Cell friend in cell.Friends)
+                    if (cell.Value != 0)
                     {
-                        if (cell.Value == friend.Value)
-                            return false;
+                        foreach (Cell friend in cell.Friends)
+                        {
+                            if (cell.Value == friend.Value)
+                                return false;
+                        }
                     }
+
                 }
             }
 
@@ -106,70 +110,32 @@ namespace sudoko_project
             return removedMarkerCells;
         }
 
-        private Cell FindLessMarkedCell()
+        private Cell FindLessMarkedCell(HashSet<Cell> emptyCells)
         {
             Cell res = null;
-            int dimensionLen = board.GetDimensionLen();
 
             int minMarkersCount = int.MaxValue;
 
-            for (int row = 0; row < dimensionLen; row++)
+            foreach (Cell cell in emptyCells)
             {
-                for (int column = 0; column < dimensionLen; column++)
+                if (cell.Markers.Count < minMarkersCount)
                 {
-                    Cell cell = board.GetCell(row, column);
-                    if (cell.Value == 0)
-                        if (cell.Markers.Count < minMarkersCount)
-                        {
-                            res = cell;
-                            minMarkersCount = cell.Markers.Count;
-                        }
+                    res = cell;
+                    minMarkersCount = cell.Markers.Count;
                 }
             }
 
             return res;
         }
 
-        internal bool IsBoardFull()
-        {
-            int dimensionLen = board.GetDimensionLen();
-            for (int row = 0; row < dimensionLen; row++)
-            {
-                for (int column = 0; column < dimensionLen; column++)
-                {
-                    Cell cell = board.GetCell(row, column);
-                    if (cell.Value == 0)
-                        return false;
-                }
-            }
-            return true;
-        }
-
-        internal bool AllCellsHaveMarkers()
-        {
-            int dimensionLen = board.GetDimensionLen();
-
-            for (int row = 0; row < dimensionLen; row++)
-            {
-                for (int column = 0; column < dimensionLen; column++)
-                {
-                    Cell cell = board.GetCell(row, column);
-                    if (cell.Value == 0 && cell.Markers.Count == 0)
-                        return false;
-                }
-            }
-            return true;
-        }
-
         private bool SolveBackTrack()
         {
-            if (IsBoardFull())
-                return true;
+            if (board.EmptyCells.Count == 0)
+                return true;   
 
-            if (!AllCellsHaveMarkers())
-                return false;
+            Cell lessMarkedCell = FindLessMarkedCell(board.EmptyCells);
+            board.EmptyCells.Remove(lessMarkedCell);
 
-            Cell lessMarkedCell = FindLessMarkedCell();
 
             HashSet<int> markersCopy = new HashSet<int>(lessMarkedCell.Markers);
 
@@ -191,6 +157,7 @@ namespace sudoko_project
                 }
             }
 
+            board.EmptyCells.Add(lessMarkedCell);
             lessMarkedCell.Value = 0;
 
             return false;
