@@ -128,24 +128,10 @@ namespace sudoko_project
             return res;
         }
 
-        internal bool AllCellsHaveMarkers(HashSet<Cell> emptyCells)
-        {
-            foreach (Cell cell in emptyCells)
-            {
-                if (cell.Markers.Count == 0)
-                    return false;
-            }
-            return true;
-        }
-
         private bool SolveBackTrack()
         {
             if (board.EmptyCells.Count == 0)
-                return true;
-
-            if (!AllCellsHaveMarkers(board.EmptyCells))
-                return false;
-
+                return true;   
 
             Cell lessMarkedCell = FindLessMarkedCell(board.EmptyCells);
             board.EmptyCells.Remove(lessMarkedCell);
