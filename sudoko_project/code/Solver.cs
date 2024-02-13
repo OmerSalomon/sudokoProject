@@ -12,6 +12,9 @@ namespace sudoko_project
     internal class Solver
     {
         private Board board;
+
+        
+
         internal char[,] Solve(char[,] charBoard)
         {
             board = new Board(charBoard);
@@ -137,8 +140,6 @@ namespace sudoko_project
 
             Cell lessMarkedCell = FindLessMarkedCell(board.EmptyCells);
             board.EmptyCells.Remove(lessMarkedCell);
-
-
             HashSet<int> markersCopy = new HashSet<int>(lessMarkedCell.Markers);
 
             foreach (int marker in markersCopy)

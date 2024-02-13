@@ -11,10 +11,13 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using System.Runtime.InteropServices;
 using System.Diagnostics;
 using sudoko_project.code;
+using static System.Net.Mime.MediaTypeNames;
 
 
 class Program
 {
+    public const string OUTPUT_FILE_RELATIVE_PATH = @"..\..\output.txt";
+
     public static void Start()
     {
         string input = null;
@@ -68,11 +71,14 @@ class Program
                 Stopwatch stopWatch = Stopwatch.StartNew();
 
                 char[,] solvedBoard = solver.Solve(charBoard);
-
                 stopWatch.Stop();
 
+                string solvedBoardString = Grider.ConvertGridToString(solvedBoard);
 
-                Console.WriteLine(Grider.ConvertGridToString(solvedBoard));
+                File.WriteAllText(Program.OUTPUT_FILE_RELATIVE_PATH, solvedBoardString);
+
+                Console.WriteLine(solvedBoardString);
+                Console.WriteLine($"Solved board written in {Path.GetFullPath(Program.OUTPUT_FILE_RELATIVE_PATH)}");
 
                 Console.WriteLine($"Elapsed time: {stopWatch.ElapsedMilliseconds} ms");
             }
