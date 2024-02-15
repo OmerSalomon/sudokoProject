@@ -39,6 +39,7 @@ namespace sudoko_project
         public int Len { get;}
 
         public HashSet<Cell> CellsSet { get; }
+        public static int EMPTY_TILE_VALUE = 0;
 
         public Board(char[,] charBoard)
         {

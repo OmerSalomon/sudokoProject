@@ -9,13 +9,13 @@ using System.Threading.Tasks;
 
 namespace sudoko_project
 {
-    internal class Solver
+    public class Solver
     {
         private Board board;
 
         
 
-        internal string Solve(string sudokoString)
+        public string Solve(string sudokoString)
         {
             char[,] charBoard = Grider.ConvertStringToCharArr(sudokoString);
             
@@ -187,9 +187,10 @@ namespace sudoko_project
                 }
             }
 
-            minMarkedCell.Value = 0;
+            minMarkedCell.Value = Board.EMPTY_TILE_VALUE;
 
             return false;
         }
+
     }
 }
