@@ -58,6 +58,7 @@
     <Content Include="input_files\grid_a.txt" />
     <Content Include="input_files\grid_b.txt" />
     <Content Include="input_files\grid_c.txt" />
+    <Content Include="input_files\grid_d.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

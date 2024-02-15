@@ -23,12 +23,12 @@ namespace sudoko_project
             Cell minMarkedCell = FindMinMarkedCell(board.CellsSet);
             int emptyCells = CountEmptyCells(board.CellsSet);
 
-            SolveBackTrack(minMarkedCell, emptyCells);
-
             if (!IsBoardValid())
                 throw new Exception("Sudoko is invalid");
 
-            if (CountEmptyCells(board.CellsSet) != 0)
+            bool isSolved = SolveBackTrack(minMarkedCell, emptyCells);
+            
+            if (!isSolved)
                 throw new SudokoException("Sudoko is unsolvable");
 
             return board.GetCharBoard();
