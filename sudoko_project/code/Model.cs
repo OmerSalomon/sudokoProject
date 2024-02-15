@@ -31,7 +31,6 @@ namespace sudoko_project
         {
             return Value.ToString();
         }
-
     }
 
     internal class Board
