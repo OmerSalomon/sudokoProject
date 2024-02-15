@@ -37,15 +37,14 @@ namespace sudoko_project
     internal class Board
     {
         public Cell[,] CellsBoard { get; }
-        public HashSet<Cell> EmptyCells { get;}
         public int Len { get;}
+
+        public HashSet<Cell> CellsSet { get; }
 
         public Board(char[,] charBoard)
         {
             if (charBoard.GetLength(0) != charBoard.GetLength(1))
                 throw new Exception("Board dimension size are not equal"); // Updated to a generic exception.
-
-            EmptyCells = new HashSet<Cell>();
 
             Len = charBoard.GetLength(0);
             CellsBoard = new Cell[Len, Len];
@@ -57,12 +56,13 @@ namespace sudoko_project
                     int cellValue = charBoard[row, column] - '0';
                     Cell cell = new Cell(cellValue, Len);
                     CellsBoard[row, column] = cell;
-                    if (cell.Value == 0)
-                        EmptyCells.Add(cell);
                 }
             }
 
             CreateGraph();
+
+            CellsSet = new HashSet<Cell>();
+            CreateBoardSet();
         }
 
         private void CreateGraph()
@@ -149,6 +149,17 @@ namespace sudoko_project
         {
             // Assuming Grider.ConvertGridToString exists and can handle the updated types
             return Grider.ConvertGridToString(GetCharBoard());
+        }
+
+        internal void CreateBoardSet()
+        {
+            for (int row = 0; row < Len; row++)
+            {
+                for (int column = 0; column < Len; column++)
+                {
+                    CellsSet.Add(CellsBoard[row, column]);
+                }
+            }
         }
     }
 }
