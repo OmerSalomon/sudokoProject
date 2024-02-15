@@ -20,7 +20,7 @@ class Program
 
     public static void Start()
     {
-        string input = null;
+        string sudokoString = null;
 
         Reader reader = null;
         int choise = -1;
@@ -55,29 +55,33 @@ class Program
 
         try
         {
-            input = reader.Read();
+            sudokoString = reader.Read();
         }
         catch (Exception e)
         {
             Console.WriteLine(e.Message);
         }
 
-        if (input != null)
+        if (sudokoString != null)
         {
             Solver solver = new Solver();
-            char[,] charBoard = Grider.ConvertStringToCharArr(input);
             try
             {
                 Stopwatch stopWatch = Stopwatch.StartNew();
 
-                char[,] solvedBoard = solver.Solve(charBoard);
+                string solvedSudokoString = solver.Solve(sudokoString);
                 stopWatch.Stop();
+
+                char[,] solvedBoard = Grider.ConvertStringToCharArr(solvedSudokoString);
 
                 string solvedBoardString = Grider.ConvertGridToString(solvedBoard);
 
                 File.WriteAllText(Program.OUTPUT_FILE_RELATIVE_PATH, solvedBoardString);
 
                 Console.WriteLine(solvedBoardString);
+                Console.WriteLine();
+                Console.WriteLine(solvedSudokoString);
+                Console.WriteLine();
                 Console.WriteLine($"Solved board written in {Path.GetFullPath(Program.OUTPUT_FILE_RELATIVE_PATH)}");
 
                 Console.WriteLine($"Elapsed time: {stopWatch.ElapsedMilliseconds} ms");
@@ -87,21 +91,6 @@ class Program
                 Console.WriteLine(e.Message);
             }
         }
-    }
-
-    public static void Debug()
-    {
-        string input = "000000000000003085001020000000507000004000100090000000500000073002010000000040009";
-        Solver solver = new Solver();
-        char[,] charBoard = Grider.ConvertStringToCharArr(input);
-
-        Stopwatch stopWatch = Stopwatch.StartNew();
-
-        Console.WriteLine(Grider.ConvertGridToString(solver.Solve(charBoard)));
-
-        stopWatch.Stop();
-        Console.WriteLine();
-        Console.WriteLine($"Elapsed time: {stopWatch.ElapsedMilliseconds} ms");
     }
 
     public static void Main(String[] args)

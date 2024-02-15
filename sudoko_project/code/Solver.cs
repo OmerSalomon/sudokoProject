@@ -15,8 +15,10 @@ namespace sudoko_project
 
         
 
-        internal char[,] Solve(char[,] charBoard)
+        internal string Solve(string sudokoString)
         {
+            char[,] charBoard = Grider.ConvertStringToCharArr(sudokoString);
+            
             board = new Board(charBoard);
             FirstBoardReduce();
 
@@ -31,7 +33,7 @@ namespace sudoko_project
             if (!isSolved)
                 throw new SudokoException("Sudoko is unsolvable");
 
-            return board.GetCharBoard();
+            return board.GetSudokoString();
         }
 
         private int CountEmptyCells(HashSet<Cell> cellsSet)

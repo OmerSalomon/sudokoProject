@@ -160,5 +160,21 @@ namespace sudoko_project
                 }
             }
         }
+
+        internal string GetSudokoString()
+        {
+            StringBuilder boardString = new StringBuilder();
+
+            for (int row = 0; row < Len; row++)
+            {
+                for (int column = 0; column < Len; column++)
+                {
+                    Cell cell = CellsBoard[row, column];
+                    boardString.Append((char)('0' + cell.Value));
+                }
+            }
+
+            return boardString.ToString();
+        }
     }
 }
