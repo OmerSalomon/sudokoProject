@@ -38,7 +38,7 @@ namespace sudoko_project
         public Cell[,] CellsBoard { get; }
         public int Len { get;}
 
-        public HashSet<Cell> CellsSet { get; }
+        public List<Cell> CellsSet { get; }
         public static int EMPTY_TILE_VALUE = 0;
 
         public Board(char[,] charBoard)
@@ -61,7 +61,7 @@ namespace sudoko_project
 
             CreateGraph();
 
-            CellsSet = new HashSet<Cell>();
+            CellsSet = new List<Cell>();
             CreateBoardSet();
         }
 
