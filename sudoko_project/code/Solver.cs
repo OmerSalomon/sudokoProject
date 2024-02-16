@@ -36,11 +36,11 @@ namespace sudoko_project
             return board.GetSudokoString();
         }
 
-        private int CountEmptyCells(HashSet<Cell> cellsSet)
+        private int CountEmptyCells(IEnumerable<Cell> cells)
         {
             int emptyCellsCount = 0;
 
-            foreach (Cell cell in cellsSet) 
+            foreach (Cell cell in cells) 
             {
                 if (cell.Value == 0)
                     emptyCellsCount++;
@@ -114,9 +114,9 @@ namespace sudoko_project
             return sum;
         }
 
-        private HashSet<Cell> ReduceCells(HashSet<Cell> cells, int marker)
+        private IEnumerable<Cell> ReduceCells(IEnumerable<Cell> cells, int marker)
         {
-            HashSet<Cell> removedMarkerCells = new HashSet<Cell>();
+            List<Cell> removedMarkerCells = new List<Cell> ();
 
             foreach (Cell friend in cells)
             {
@@ -130,7 +130,7 @@ namespace sudoko_project
             return removedMarkerCells;
         }
 
-        private Cell FindMinMarkedCell(HashSet<Cell> cells)
+        private Cell FindMinMarkedCell(IEnumerable<Cell> cells)
         {
             Cell res = null;
 
@@ -162,12 +162,12 @@ namespace sudoko_project
                 return true;
 
 
-            HashSet<int> markersCopy = new HashSet<int>(minMarkedCell.Markers);
+            IEnumerable<int> markersCopy = new HashSet<int>(minMarkedCell.Markers);
 
             foreach (int marker in markersCopy)
             {
                 minMarkedCell.Value = marker;
-                HashSet<Cell> removedMarkerCells = ReduceCells(minMarkedCell.Friends, marker);
+                IEnumerable<Cell> removedMarkerCells = ReduceCells(minMarkedCell.Friends, marker);
 
                 Cell nextMinMarkedCell = FindMinMarkedCell(minMarkedCell.Friends);
                 if (nextMinMarkedCell == null)

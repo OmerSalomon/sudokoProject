@@ -8,11 +8,11 @@ namespace sudoko_project
     {
         public int Value { get; set; }
         public HashSet<int> Markers { get; set; }
-        public HashSet<Cell> Friends { get; set; }
+        public List<Cell> Friends { get; set; }
 
         internal Cell(int value, int markerAmount)
         {
-            Friends = new HashSet<Cell>();
+            Friends = new List<Cell>();
             Markers = new HashSet<int>();
 
             if (value == 0)
@@ -83,14 +83,14 @@ namespace sudoko_project
             for (int i = 0; i < Len; i++)
             {
                 Cell friend = CellsBoard[row, i];
-                if (friend != mainCell)
+                if (friend != mainCell && !mainCell.Friends.Contains(friend))
                     mainCell.Friends.Add(friend);
             }
 
             for (int i = 0; i < Len; i++)
             {
                 Cell friend = CellsBoard[i, column];
-                if (friend != mainCell)
+                if (friend != mainCell && !mainCell.Friends.Contains(friend))
                     mainCell.Friends.Add(friend);
             }
 
@@ -103,7 +103,7 @@ namespace sudoko_project
                 for (int columnIteration = boxColStart; columnIteration < boxColStart + sqrt; columnIteration++)
                 {
                     Cell friend = CellsBoard[rowIteration, columnIteration];
-                    if (friend != mainCell)
+                    if (friend != mainCell && !mainCell.Friends.Contains(friend))
                         mainCell.Friends.Add(friend);
                 }
             }
