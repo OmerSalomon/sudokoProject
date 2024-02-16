@@ -80,11 +80,13 @@ class Program
 
                 Console.WriteLine(solvedBoardString);
                 Console.WriteLine();
-                Console.WriteLine(solvedSudokoString);
-                Console.WriteLine();
                 Console.WriteLine($"Solved board written in {Path.GetFullPath(Program.OUTPUT_FILE_RELATIVE_PATH)}");
-
-                Console.WriteLine($"Elapsed time: {stopWatch.ElapsedMilliseconds} ms");
+                Console.WriteLine();
+                Console.WriteLine($"Solving time: {stopWatch.ElapsedMilliseconds} ms");
+                Console.WriteLine();
+                IOogwayable master = MasterOogway.GetInstance();
+                Console.WriteLine($"\"{master.GetRandomSentence()}\" ~Master Oogway");
+                Console.WriteLine();
             }
             catch (Exception e)
             {

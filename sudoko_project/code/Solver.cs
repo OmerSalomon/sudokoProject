@@ -13,8 +13,6 @@ namespace sudoko_project
     {
         private Board board;
 
-        
-
         public string Solve(string sudokoString)
         {
             char[,] charBoard = Grider.ConvertStringToCharArr(sudokoString);
@@ -26,7 +24,7 @@ namespace sudoko_project
             int emptyCells = CountEmptyCells(board.CellsSet);
 
             if (!IsBoardValid())
-                throw new Exception("Sudoko is invalid");
+                throw new SudokoException("Sudoko is invalid");
 
             bool isSolved = SolveBackTrack(minMarkedCell, emptyCells);
             
@@ -148,11 +146,8 @@ namespace sudoko_project
                         res = cell;
                         minMarkersCount = cell.Markers.Count;
                     }
-                }
-
-                
+                }             
             }
-
             return res;
         }
 
