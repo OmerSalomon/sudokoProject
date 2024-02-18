@@ -21,9 +21,21 @@ Before you begin, ensure you have the following installed on your system:
 2) Open the solution in preferd IDE.
 3) Run the application.
 
+* How your input should look like?
+  Your input should be a single-line string that represents every cell on your Sudoku board.
+  The length of the string should be a perfect square of a positive integer.
+  The characters in your input should range from '0' upwards in the ASCII table,
+  with the highest ASCII value character not exceeding '0'
+  plus the dimension of your board (the square root of your string's length).
+  
 ## Usage 
 1) choose input type:
-   o file
-   o cli
+-file
+-CLI
 
+2)
+For a file write the full path for your file
+For CLI write your string in the CLI.
 
+3) press enter:
+   The solved sudoko grid will be printed on your CLI and full path to an output file will be printed too.
