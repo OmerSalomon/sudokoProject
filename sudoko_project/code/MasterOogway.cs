@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace sudoko_project.code
 {
-    internal class MasterOogway : IOogwayable
+    internal class MasterOogway : IWiserable
     {
         private List<string> smartSentances;
 
@@ -33,6 +33,7 @@ namespace sudoko_project.code
                 instance = new MasterOogway();
             return instance;
         }
+
         public string GetRandomSentence()
         {
             Random random = new Random();
@@ -41,7 +42,7 @@ namespace sudoko_project.code
         }
     }
 
-    internal interface IOogwayable
+    internal interface IWiserable
     {
         string GetRandomSentence();
     }

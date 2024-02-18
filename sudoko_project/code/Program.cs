@@ -84,7 +84,7 @@ class Program
                 Console.WriteLine();
                 Console.WriteLine($"Solving time: {stopWatch.ElapsedMilliseconds} ms");
                 Console.WriteLine();
-                IOogwayable master = MasterOogway.GetInstance();
+                IWiserable master = MasterOogway.GetInstance();
                 Console.WriteLine($"\"{master.GetRandomSentence()}\" ~Master Oogway");
                 Console.WriteLine();
             }
