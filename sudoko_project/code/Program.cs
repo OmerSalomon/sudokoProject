@@ -74,11 +74,11 @@ class Program
 
                 char[,] solvedBoard = Grider.ConvertStringToCharArr(solvedSudokoString);
 
-                string solvedBoardString = Grider.ConvertGridToString(solvedBoard);
+                string solvedBoardString = Grider.GetSudokuGridAsString(solvedBoard);
 
                 File.WriteAllText(Program.OUTPUT_FILE_RELATIVE_PATH, solvedBoardString);
 
-                Console.WriteLine(solvedBoardString);
+                BoardPrinter.PrintBoard(solvedBoard);
                 Console.WriteLine();
                 Console.WriteLine($"Solved board written in {Path.GetFullPath(Program.OUTPUT_FILE_RELATIVE_PATH)}");
                 Console.WriteLine();

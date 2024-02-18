@@ -1,5 +1,5 @@
 using System;
-using 
+
 
 namespace TestSudoku
 {
@@ -9,6 +9,7 @@ namespace TestSudoku
         [TestMethod]
         public void TestMethod1()
         {
+            Assert.IsTrue(true);
         }
     }
 }

@@ -77,5 +77,41 @@ namespace sudoko_project
             }
             return sb.ToString();
         }
+
+        public static string GetSudokuGridAsString(char[,] board)
+        {
+            int size = board.GetLength(0); // Assuming the board is a square (NxN)
+            int subgridSize = (int)Math.Sqrt(size); // Calculate the size of subgrids
+            StringBuilder sb = new StringBuilder();
+
+            for (int i = 0; i < size; i++)
+            {
+                if (i % subgridSize == 0 && i != 0)
+                {
+                    sb.AppendLine(new string('-', 2 * size + subgridSize - 1));
+                }
+
+                for (int j = 0; j < size; j++)
+                {
+                    sb.Append(board[i, j]);
+
+                    if ((j + 1) % subgridSize == 0 && j != size - 1)
+                    {
+                        sb.Append("|");
+                    }
+                    else if (j != size - 1)
+                    {
+                        sb.Append(" ");
+                    }
+                }
+
+                if (i != size - 1) // Prevents an extra newline at the end of the grid
+                {
+                    sb.AppendLine();
+                }
+            }
+
+            return sb.ToString();
+        }
     }
 }

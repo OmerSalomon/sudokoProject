@@ -116,6 +116,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="code\BoardPrinter.cs" />
     <Compile Include="code\MasterOogway.cs" />
     <Compile Include="code\Reader.cs" />
     <Compile Include="code\Solver.cs" />
