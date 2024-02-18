@@ -40,7 +40,7 @@ namespace sudoko_project
             Cell minMarkedCell = FindMinMarkedCell(board.Cells);
             int emptyCells = CountEmptyCells(board.Cells);
 
-            if (!IsBoardValid())
+            if (!IsBoardValid() || minMarkedCell.Markers.Count == 0)
                 throw new SudokoException("Sudoko is invalid");
 
             bool isSolved = SolveBackTrack(minMarkedCell, emptyCells);
@@ -238,7 +238,6 @@ namespace sudoko_project
                 Cell nextMinMarkedCell = FindMinMarkedCell(minMarkedCell.Friends);
                 if (nextMinMarkedCell == null)
                     nextMinMarkedCell = FindMinMarkedCell(board.Cells);
-
 
                 bool isSolved = SolveBackTrack(nextMinMarkedCell, emptyCells - 1);
 

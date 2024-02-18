@@ -130,19 +130,20 @@ namespace sudoko_project
         private void GenerateFriendsForCell(int row, int column)
         {
             Cell mainCell = CellsBoard[row, column];
-
+            HashSet<Cell> friendHashSet = new HashSet<Cell>();
+            
             for (int i = 0; i < Len; i++)
             {
                 Cell friend = CellsBoard[row, i];
-                if (friend != mainCell && !mainCell.Friends.Contains(friend))
-                    mainCell.Friends.Add(friend);
+                if (friend != mainCell)
+                    friendHashSet.Add(friend);
             }
 
             for (int i = 0; i < Len; i++)
             {
                 Cell friend = CellsBoard[i, column];
-                if (friend != mainCell && !mainCell.Friends.Contains(friend))
-                    mainCell.Friends.Add(friend);
+                if (friend != mainCell)
+                    friendHashSet.Add(friend);
             }
 
             int sqrt = (int)Math.Sqrt(Len);
@@ -154,10 +155,12 @@ namespace sudoko_project
                 for (int columnIteration = boxColStart; columnIteration < boxColStart + sqrt; columnIteration++)
                 {
                     Cell friend = CellsBoard[rowIteration, columnIteration];
-                    if (friend != mainCell && !mainCell.Friends.Contains(friend))
-                        mainCell.Friends.Add(friend);
+                    if (friend != mainCell)
+                        friendHashSet.Add(friend);
                 }
             }
+
+            mainCell.Friends = new List<Cell>(friendHashSet);
         }
 
         /// <summary>
