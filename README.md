@@ -1,1 +1,11 @@
-# sudoko_project
+# # Sudoko Project
+
+## Description
+...
+
+## Features
+...
+
+## Installation
+...
+
