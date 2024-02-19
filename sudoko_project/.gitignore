@@ -147,3 +147,4 @@ ScaffoldingReadMe.txt
 
 # Exclude .NET Core SDKs and Runtimes from the repository
 .dotnet/
+.vs/
