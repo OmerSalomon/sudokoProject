@@ -2,6 +2,6 @@ obj
 bin
 .vs/ 
 App.config
-sudoko_project.Test.csproj
+sudoko_project.test.csproj
 Properties/
-sudoko_project.Test.sln
+sudoko_project.test.sln
