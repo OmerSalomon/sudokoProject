@@ -9,7 +9,9 @@ namespace TestSudoku
     public class Tests
     {
 
-
+        /// <summary>
+        /// Check if the solver successfully solves every solvable sudoku.
+        /// </summary>
         [TestMethod]
         public void Solve_SolvableSudokos_SudokoException()
         {
@@ -26,6 +28,9 @@ namespace TestSudoku
             
         }
 
+        /// <summary>
+        /// Check if the solver successfully detects unsolvable sudokus.
+        /// </summary>
         [TestMethod]
         public void Solve_UnsolveablesSudokos_ThrowsUnsolvableSudokoException()
         {
@@ -40,6 +45,9 @@ namespace TestSudoku
 
         }
 
+        /// <summary>
+        /// Check if the solver successfully detects invalid sudokus.
+        /// </summary>
         [TestMethod]
         public void Solve_InvalidSudokos_ThrowsUnsolvableSudokoException()
         {

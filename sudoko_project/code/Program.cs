@@ -40,26 +40,29 @@ class Program
             try
             {
                 choise = int.Parse(Console.ReadLine());
+                if (choise == 1)
+                {
+                    reader = new TextFileReader();
+                }
+                else if (choise == 2)
+                {
+                    reader = new CLIReader();
+                }
+                else if (choise == 3)
+                {
+                    return;
+                }
+                else
+                {
+                    Console.WriteLine("number is invalid\n");
+                }
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.Message + "\n");
             }
-            if (choise == 1)
-            {
-                reader = new TextFileReader();
-            }
-            else if (choise == 2)
-            {
-                reader = new CLIReader();
-            }
-            else if (choise == 3)
-            {
-                return;
-            }
-            else {
-                Console.WriteLine("number is invalid\n");
-            }
+
+            
         }
 
         
