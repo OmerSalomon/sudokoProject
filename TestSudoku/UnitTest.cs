@@ -1,14 +1,16 @@
+using sudoko_project;
 using System;
 
 
 namespace TestSudoku
 {
     [TestClass]
-    public class UnitTest1
+    public class UnitTest
     {
         [TestMethod]
-        public void TestMethod1()
+        public void TestMethod()
         {
+            Solver solver = new Solver();
             Assert.IsTrue(true);
         }
     }
