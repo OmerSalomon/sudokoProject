@@ -50,7 +50,7 @@ The first step in the recursive function is to check for the base case, which is
 For the current `minMarkedCell`, the algorithm iterates through each of its possible values (markers). These markers represent the numbers that can potentially be placed in the cell without violating Sudoku rules based on the current state of the board.
 
 ### Recursive Exploration
-Upon selecting a marker for `minMarkedCell`, the algorithm proceeds to remove this value from the list of possible values for all cells that are in the same row, column, or 3x3 subgrid (these cells are referred to as `minMarkedCell.Friends`). This action reflects the constraint propagation typical in Sudoku, where placing a number in a cell eliminates that number as a possibility for its related cells.
+Upon selecting a marker for `minMarkedCell`, the algorithm proceeds to remove this value from the list of possible values for all cells that are in the same row, column, or sqrt(len) x sqrt(len) subgrid (these cells are referred to as `minMarkedCell.Friends`). This action reflects the constraint propagation typical in Sudoku, where placing a number in a cell eliminates that number as a possibility for its related cells.
 
 ### Choosing the Next Cell
 After updating the board state, the algorithm selects the next cell to work on, ideally the one with the fewest remaining markers post-update, to continue the solving process. This selection is made first among the friends of the current cell and, if not applicable, among all remaining empty cells on the board.
