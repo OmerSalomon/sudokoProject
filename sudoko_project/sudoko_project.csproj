@@ -131,10 +131,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="input_files\grid_a.txt" />
-    <Content Include="input_files\grid_b.txt" />
-    <Content Include="input_files\grid_c.txt" />
-    <Content Include="input_files\grid_e.txt" />
+    <Content Include=".gitignore" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

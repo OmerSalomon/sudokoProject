@@ -31,4 +31,19 @@ namespace sudoko_project
             : base(message) { }
     }
 
+    public class UnsolvableSudokoException : SudokoException
+    {
+        public UnsolvableSudokoException() { }
+
+        public UnsolvableSudokoException(string message) 
+            : base(message) { }
+    }
+
+    public class InvalidSudokoException : SudokoException
+    {
+        public InvalidSudokoException() { }
+
+        public InvalidSudokoException(string message) 
+            : base(message) { }
+    }
 }

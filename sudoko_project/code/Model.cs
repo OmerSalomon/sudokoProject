@@ -226,8 +226,7 @@ namespace sudoko_project
         /// This method iterates through each cell on the board, row by row and column by column. For each cell, it converts the numeric value 
         /// by advancing up in the ASCII table to get the corresponding character representation. This transformation creates a linear string 
         /// that reflects the board's state, where each character directly corresponds to the cell's value adjusted in the ASCII sequence. 
-        /// It is particularly useful for encoding the board's state in a compact and easily transmissible format. Note that this approach 
-        /// assumes all cell values are such that when incremented in the ASCII table, they result in valid, intended characters.
+        /// It is particularly useful for encoding the board's state in a compact and easily transmissible format. 
         /// </remarks>
         /// <returns>
         /// A string representing the current state of the Sudoku board, with each cell's value adjusted and concatenated into a continuous sequence.

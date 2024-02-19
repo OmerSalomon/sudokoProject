@@ -41,12 +41,12 @@ namespace sudoko_project
             int emptyCells = CountEmptyCells(board.Cells);
 
             if (!IsBoardValid() || minMarkedCell.Markers.Count == 0)
-                throw new SudokoException("Sudoko is invalid");
+                throw new InvalidSudokoException("Sudoko is invalid");
 
             bool isSolved = SolveBackTrack(minMarkedCell, emptyCells);
             
             if (!isSolved)
-                throw new SudokoException("Sudoko is unsolvable");
+                throw new UnsolvableSudokoException("Sudoko is unsolvable");
 
             return board.GetSudokoLinearString();
         }
