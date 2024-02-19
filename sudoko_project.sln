@@ -5,7 +5,7 @@ VisualStudioVersion = 17.8.34330.188
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "sudoko_project", "sudoko_project\sudoko_project.csproj", "{78F103B4-71D1-4EB5-AA1A-4EAD9C14C052}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestSudoku", "TestSudoku\TestSudoku.csproj", "{0B681D57-3C17-42B3-83DE-437D4623E274}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "sudoko_project.Test", "TestSudoku\sudoko_project.Test.csproj", "{0B681D57-3C17-42B3-83DE-437D4623E274}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
