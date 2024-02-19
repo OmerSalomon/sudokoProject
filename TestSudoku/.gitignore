@@ -1,0 +1,7 @@
+obj
+bin
+.vs/ 
+App.config
+sudoko_project.Test.csproj
+Properties/
+sudoko_project.Test.sln
