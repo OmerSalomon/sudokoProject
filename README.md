@@ -1,6 +1,8 @@
 ## Sudoku Project
 Hello dear Omegon, I hope you're having a great day. I've put a lot of effort into this project, and I hope it turns out to be good enough. Enjoy! :)
 
+By the way, only now, two days before the submission, I found out that it should be spelled "Sudoku" and not "Sudoko." I think it will be best to keep it as "Sudoko" for sentimental purposes.
+
 ## Description
 This Sudoku project aims to solve puzzles of various sizes and difficulty levels as swiftly as possible, while ensuring the code remains reusable and generic.
 
