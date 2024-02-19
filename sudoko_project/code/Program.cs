@@ -18,6 +18,13 @@ class Program
 {
     public const string OUTPUT_FILE_RELATIVE_PATH = @"..\..\output.txt";
 
+    /// <summary>
+    /// Starts the application process for solving a Sudoku puzzle.
+    /// This method provides options to read the Sudoku puzzle from a file, from the CLI, or to exit the application.
+    /// Upon receiving a valid Sudoku puzzle input, it solves the puzzle, measures the solving time,
+    /// prints the solved board to the console, writes the solved board to a specified output file,
+    /// and displays a wisdom quote from Master Oogway.
+    /// </summary>
     public static void Start()
     {
         string sudokoString = null;
@@ -37,8 +44,6 @@ class Program
                 Console.WriteLine(ex.Message);
             }
         }
-
-
 
         if (choise == 1)
         {
@@ -64,10 +69,11 @@ class Program
 
         if (sudokoString != null)
         {
+            Stopwatch stopWatch = Stopwatch.StartNew();
             Solver solver = new Solver();
             try
             {
-                Stopwatch stopWatch = Stopwatch.StartNew();
+                
 
                 string solvedSudokoString = solver.Solve(sudokoString);
                 stopWatch.Stop();
@@ -91,6 +97,8 @@ class Program
             catch (Exception e)
             {
                 Console.WriteLine(e.Message);
+                stopWatch.Stop();
+                Console.WriteLine($"Solving time: {stopWatch.ElapsedMilliseconds} ms");
             }
         }
     }
