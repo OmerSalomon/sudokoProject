@@ -12,6 +12,7 @@ using System.Runtime.InteropServices;
 using System.Diagnostics;
 using sudoko_project.code;
 using static System.Net.Mime.MediaTypeNames;
+using System.Runtime.CompilerServices;
 
 
 class Program
@@ -31,10 +32,11 @@ class Program
 
         Reader reader = null;
         int choise = -1;
-        Console.WriteLine("Choose: \n 1- Read from file \n 2- Read from CLI \n 3- Exit"); // Added an exit option
 
         while (!(choise > 0 && choise <= 3))
         {
+            Console.WriteLine("Choose: \n 1- Read from file \n 2- Read from CLI \n 3- Exit");
+
             try
             {
                 choise = int.Parse(Console.ReadLine());
@@ -43,20 +45,24 @@ class Program
             {
                 Console.WriteLine(ex.Message);
             }
+            if (choise == 1)
+            {
+                reader = new TextFileReader();
+            }
+            else if (choise == 2)
+            {
+                reader = new CLIReader();
+            }
+            else if (choise == 3)
+            {
+                return;
+            }
+            else {
+                Console.WriteLine("number is invalid\n");
+            }
         }
 
-        if (choise == 1)
-        {
-            reader = new TextFileReader();
-        }
-        else if (choise == 2)
-        {
-            reader = new CLIReader();
-        }
-        else if (choise == 3)
-        {
-            return;
-        }
+        
 
         try
         {
@@ -73,11 +79,8 @@ class Program
             Solver solver = new Solver();
             try
             {
-                
-
                 string solvedSudokoString = solver.Solve(sudokoString);
                 stopWatch.Stop();
-
                 char[,] solvedBoard = Grider.ConvertStringToCharArr(solvedSudokoString);
 
                 string solvedBoardString = Grider.GetSudokuGridAsString(solvedBoard);
